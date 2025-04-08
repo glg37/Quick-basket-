@@ -9,7 +9,7 @@ public class MoveBasket : MonoBehaviour
     public float upperLimit = 10f;  
     public float lowerLimit = 0f;   
 
-    // Variável para controlar a direção do movimento
+   
     private bool movingUp = true;
 
     void Update()

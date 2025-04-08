@@ -1,34 +1,49 @@
 using UnityEngine;
-using TMPro;  // Adicione essa linha para usar o TextMeshPro
+using TMPro;  
 
 public class Pontuacao : MonoBehaviour
 {
-    public TMP_Text textoPontos;  // Referência ao componente TextMeshPro
-    private int pontos = 0;  // Contador de pontos
+    public TMP_Text textoPontos;  
+    private int pontos = 0;  
+    private bool bolaDentro = false;  
 
     void Start()
     {
-        // Certifica-se de que o texto começa com 0 pontos
+        
         if (textoPontos != null)
         {
             textoPontos.text = "Pontos: " + pontos.ToString();
         }
     }
 
-    // Função chamada quando algo entra no trigger
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Verifica se o objeto que colidiu é a bola (você pode ajustar isso com a tag ou nome do objeto)
-        if (other.CompareTag("Ball"))  // Aqui a bola deve ter a tag "Bola"
+        
+        if (other.CompareTag("Ball") && !bolaDentro)  
         {
-            // Incrementa os pontos
+  
             pontos++;
 
-            // Atualiza o texto do contador de pontos
+   
             if (textoPontos != null)
             {
                 textoPontos.text = "Pontos: " + pontos.ToString();
             }
+
+      
+            bolaDentro = true;
+        }
+    }
+
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+       
+        if (other.CompareTag("Ball"))
+        {
+            
+            bolaDentro = false;
         }
     }
 }

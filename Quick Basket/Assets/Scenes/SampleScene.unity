@@ -273,7 +273,7 @@ GameObject:
   - component: {fileID: 110920828}
   m_Layer: 0
   m_Name: Cesta
-  m_TagString: Untagged
+  m_TagString: Cesta
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -342,8 +342,8 @@ Transform:
   m_GameObject: {fileID: 110920823}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.64, y: 2, z: 0}
-  m_LocalScale: {x: 1.283316, y: 1, z: 1}
+  m_LocalPosition: {x: 1.6248, y: 2.4372, z: 0}
+  m_LocalScale: {x: 1.070555, y: 0.6201773, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -406,9 +406,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a4efd16fad4e5a42bb38b40bb533d18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 4
   upperLimit: 3
-  lowerLimit: -3
+  lowerLimit: -2
 --- !u!114 &110920828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1579,10 +1579,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rbBola: {fileID: 149990502}
-  forcaMinima: 5
-  forcaMaxima: 11
+  forcaMinima: 4
+  forcaMaxima: 9
   direcionamento: {x: 0.74, y: 2}
-  textoPontos: {fileID: 0}
 --- !u!1 &1174997734
 GameObject:
   m_ObjectHideFlags: 0
