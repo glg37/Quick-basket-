@@ -1,70 +1,43 @@
 using UnityEngine;
 
-
 public class Ball : MonoBehaviour
 {
-    public Rigidbody2D rbBola;  
-    public float forcaMinima = 5f;  
-    public float forcaMaxima = 30f;  
-    public Vector2 direcionamento = new Vector2(1f, 1f);  
+    
+    public float forcaLancamento = 15f;
 
     
+    public Vector2 direcaoLancamento = new Vector2(1f, 1f);
 
-    private float tempoPressionado = 0f; 
+    private Rigidbody2D rb;
+
+   
+    private int pontos = 0;
 
     void Start()
     {
        
-        if (rbBola == null)
-        {
-            rbBola = GetComponent<Rigidbody2D>();
-        }
-
-        
-    }
-
-   
-    public void IniciarPressionamento()
-    {
-        tempoPressionado = 0f;  
-    }
-
-    
-    public void FinalizarPressionamento()
-    {
-        LancarBola();  
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-       
-        if (tempoPressionado >= 0f)
+     
+        if (Input.GetMouseButtonDown(0))
         {
-            tempoPressionado += Time.deltaTime;  
+            LancaBola();
         }
     }
 
     
-    public void LancarBola()
+    void LancaBola()
     {
-        
-        rbBola.linearVelocity = Vector2.zero;
-        rbBola.gravityScale = 1f; 
+    
+        rb.linearVelocity = Vector2.zero; 
 
-        
-        float forcaLancamento = Mathf.Lerp(forcaMinima, forcaMaxima, tempoPressionado);
-
-       
-        rbBola.AddForce(direcionamento.normalized * forcaLancamento, ForceMode2D.Impulse);
-
-       
-        
+    
+        Vector2 direcao = direcaoLancamento.normalized;
+        rb.AddForce(direcao * forcaLancamento, ForceMode2D.Impulse);
     }
 
-    
-    
-
-    
-  
-    
+   
 }
