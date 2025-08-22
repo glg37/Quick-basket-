@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ball
   - Cesta
+  - Basket
   layers:
   - Default
   - TransparentFX
