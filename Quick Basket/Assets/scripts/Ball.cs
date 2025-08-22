@@ -4,7 +4,7 @@ public class Ball : MonoBehaviour
 {
     public float forcaLancamento = 15f;
     [Range(1f, 5f)]
-    public float fatorAltura = 2f; // controla a curvatura
+    public float fatorAltura = 2f;
 
     private Rigidbody2D rb;
     private Transform cestaAtual;
@@ -12,7 +12,8 @@ public class Ball : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        cestaAtual = GameObject.FindGameObjectWithTag("Basket").transform;
+        //  NÃO precisa procurar a cesta aqui
+        // cestaAtual = GameObject.FindGameObjectWithTag("Basket").transform;
     }
 
     void Update()
@@ -27,12 +28,9 @@ public class Ball : MonoBehaviour
     {
         if (cestaAtual == null) return;
 
-        // Zera a velocidade antes do lançamento
         rb.linearVelocity = Vector2.zero;
 
         Vector2 direcao = (cestaAtual.position - transform.position).normalized;
-
-        // Adiciona o fatorAltura na direção vertical
         Vector2 forca = new Vector2(direcao.x, direcao.y + fatorAltura) * forcaLancamento;
 
         rb.AddForce(forca, ForceMode2D.Impulse);

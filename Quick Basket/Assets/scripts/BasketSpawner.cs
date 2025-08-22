@@ -6,49 +6,42 @@ public class BasketSpawner : MonoBehaviour
     public GameObject cestaPrefab;
     public Transform ball;
 
-    [Header("Limites de Posição")]
-    public float alturaMinima = 1f;
-    public float alturaMaxima = 3f;
+    [Header("Limites de Posição dentro da Arena")]
+    public float alturaMinimaRelativa = 0.5f;
+    public float alturaMaximaRelativa = 2f;
     public float xEsquerda = -3f;
-    public float xDireita = 2f;
+    public float xDireita = 3f;
+
+    [Header("Arena Manager")]
+    public ArenaManager arenaManager; // referência ao ArenaManager
 
     private GameObject cestaAtual;
-    private bool ultimaCestaEsquerda = false; // Guarda de onde veio a última cesta
+    private bool ultimaCestaEsquerda = false;
 
     void Start()
     {
-        cestaAtual = GameObject.FindGameObjectWithTag("Basket");
-        if (cestaAtual != null)
-        {
-            ball.GetComponent<Ball>().SetCestaAlvo(cestaAtual.transform);
-            // Define lado inicial baseado na posição da cesta
-            ultimaCestaEsquerda = cestaAtual.transform.position.x < 0;
-        }
-        else
-        {
-            SpawnNovaCesta();
-        }
+        // Spawn inicial da cesta na arena atual
+        SpawnNovaCesta();
     }
 
     public void SpawnNovaCesta()
     {
         // Destrói a cesta anterior
         if (cestaAtual != null)
-        {
             Destroy(cestaAtual);
-        }
 
         // Alterna lado da nova cesta
         float xPos = ultimaCestaEsquerda ? xDireita : xEsquerda;
-        ultimaCestaEsquerda = !ultimaCestaEsquerda; // Atualiza para a próxima vez
+        ultimaCestaEsquerda = !ultimaCestaEsquerda;
 
-        // Escolhe altura aleatória dentro dos limites
-        float yPos = Random.Range(alturaMinima, alturaMaxima);
+        // Pega a posição da arena atual e define altura relativa
+        Transform arenaAtual = arenaManager.GetArenaAtualTransform();
+        float yBase = arenaAtual.position.y;
+        float yPos = yBase + Random.Range(alturaMinimaRelativa, alturaMaximaRelativa);
 
         // Cria a nova cesta
         cestaAtual = Instantiate(cestaPrefab, new Vector2(xPos, yPos), Quaternion.identity);
         cestaAtual.tag = "Basket";
-        cestaAtual.SetActive(true);
 
         // Define a nova cesta como alvo da bola
         ball.GetComponent<Ball>().SetCestaAlvo(cestaAtual.transform);
