@@ -10,7 +10,6 @@ public class ArenaManager : MonoBehaviour
     [Header("Câmera")]
     public Camera mainCamera;
     public Vector3[] posicoesCamera; // posições para cada arena
-    public float tempoMovimentoCamera = 1f; // tempo que a câmera leva para descer
 
     private int arenaAtual = 0;
     private int acertos = 0;
@@ -26,11 +25,11 @@ public class ArenaManager : MonoBehaviour
 
         if (acertos >= cestasParaDescer[arenaAtual])
         {
-            StartCoroutine(DescerArenaCoroutine());
+            DescerArena();
         }
     }
 
-    IEnumerator DescerArenaCoroutine()
+    void DescerArena()
     {
         if (arenaAtual + 1 < arenas.Length)
         {
@@ -38,20 +37,6 @@ public class ArenaManager : MonoBehaviour
             acertos = 0;
 
             AtualizarArenas();
-
-            // Move a câmera suavemente
-            Vector3 posInicial = mainCamera.transform.position;
-            Vector3 posFinal = posicoesCamera[arenaAtual];
-            float tempo = 0f;
-
-            while (tempo < tempoMovimentoCamera)
-            {
-                tempo += Time.deltaTime;
-                mainCamera.transform.position = Vector3.Lerp(posInicial, posFinal, tempo / tempoMovimentoCamera);
-                yield return null;
-            }
-
-            mainCamera.transform.position = posFinal; // garante a posição final exata
         }
         else
         {
@@ -64,6 +49,12 @@ public class ArenaManager : MonoBehaviour
         for (int i = 0; i < arenas.Length; i++)
         {
             arenas[i].SetActive(i == arenaAtual);
+        }
+
+        // Move a câmera imediatamente para a posição da arena atual
+        if (arenaAtual < posicoesCamera.Length)
+        {
+            mainCamera.transform.position = posicoesCamera[arenaAtual];
         }
     }
 
