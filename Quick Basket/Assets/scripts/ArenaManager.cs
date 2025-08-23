@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class ArenaManager : MonoBehaviour
 {
@@ -9,13 +8,20 @@ public class ArenaManager : MonoBehaviour
 
     [Header("Câmera")]
     public Camera mainCamera;
-    public Vector3[] posicoesCamera; // posições para cada arena
+    public Vector3[] posicoesCamera;
 
     private int arenaAtual = 0;
     private int acertos = 0;
 
     void Start()
     {
+        // Carrega progresso salvo, se existir
+        if (PlayerPrefs.HasKey("arenaAtual"))
+        {
+            arenaAtual = PlayerPrefs.GetInt("arenaAtual", 0);
+            acertos = PlayerPrefs.GetInt("acertos", 0);
+        }
+
         AtualizarArenas();
     }
 
@@ -51,7 +57,6 @@ public class ArenaManager : MonoBehaviour
             arenas[i].SetActive(i == arenaAtual);
         }
 
-        // Move a câmera imediatamente para a posição da arena atual
         if (arenaAtual < posicoesCamera.Length)
         {
             mainCamera.transform.position = posicoesCamera[arenaAtual];
@@ -62,5 +67,14 @@ public class ArenaManager : MonoBehaviour
     public Transform GetArenaAtualTransform()
     {
         return arenas[arenaAtual].transform;
+    }
+
+    //  SALVAR PROGRESSO
+    public void SalvarProgresso()
+    {
+        PlayerPrefs.SetInt("arenaAtual", arenaAtual);
+        PlayerPrefs.SetInt("acertos", acertos);
+        PlayerPrefs.Save();
+        Debug.Log("Progresso salvo!");
     }
 }

@@ -542,7 +542,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1211149082
 RectTransform:
   m_ObjectHideFlags: 0
@@ -609,7 +609,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1299150200}
         m_TargetAssemblyTypeName: MenuController, Assembly-CSharp
-        m_MethodName: ContinuarJogo
+        m_MethodName: Continuar
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -754,6 +754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c35bdd31d6f6fa469afc3b5d52dfded, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  continuarButton: {fileID: 1211149083}
 --- !u!4 &1299150201
 Transform:
   m_ObjectHideFlags: 0
