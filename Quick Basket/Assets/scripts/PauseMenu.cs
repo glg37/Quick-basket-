@@ -18,7 +18,7 @@ public class PauseMenu : MonoBehaviour
 
         continueButton.onClick.AddListener(ContinueGame);
         quitButton.onClick.AddListener(QuitToMenu);
-        saveAndQuitButton.onClick.AddListener(SaveAndQuit);
+    
 
         // Unity novo (2023+)
         arenaManager = FindFirstObjectByType<ArenaManager>();
@@ -55,14 +55,5 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
-    void SaveAndQuit()
-    {
-        if (arenaManager != null)
-        {
-            arenaManager.SalvarProgresso();
-        }
-
-        Time.timeScale = 1f;
-        SceneManager.LoadScene("Menu");
-    }
+    
 }

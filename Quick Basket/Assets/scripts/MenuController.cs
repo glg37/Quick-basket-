@@ -8,32 +8,20 @@ public class MenuController : MonoBehaviour
 
     void Start()
     {
-        AtualizarMenu();
-    }
-
-    void AtualizarMenu()
-    {
-        // Se já existe progresso salvo  ativa o botão continuar
-        if (PlayerPrefs.HasKey("arenaAtual"))
-        {
-            continuarButton.gameObject.SetActive(true);
-        }
-        else
-        {
+        // Desativa o botão continuar, pois não há mais save
+        if (continuarButton != null)
             continuarButton.gameObject.SetActive(false);
-        }
     }
 
     public void Jogar()
     {
-        // Novo jogo  limpa save antigo
-        PlayerPrefs.DeleteKey("arenaAtual");
-        PlayerPrefs.DeleteKey("acertos");
+        // Novo jogo
         SceneManager.LoadScene("Jogo");
     }
 
     public void Continuar()
     {
+        // Agora Continuar faz a mesma coisa que Jogar
         SceneManager.LoadScene("Jogo");
     }
 
