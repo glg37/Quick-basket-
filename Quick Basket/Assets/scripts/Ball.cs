@@ -12,8 +12,7 @@ public class Ball : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        //  NÃO precisa procurar a cesta aqui
-        // cestaAtual = GameObject.FindGameObjectWithTag("Basket").transform;
+      
     }
 
     void Update()

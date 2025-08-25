@@ -6,13 +6,13 @@ public class Basket : MonoBehaviour
     {
         if (collision.CompareTag("Ball"))
         {
-            // avisa que acertou uma cesta
+            
             FindFirstObjectByType<ArenaManager>().AcertouCesta();
 
-            // spawna a próxima cesta
+            
             FindFirstObjectByType<BasketSpawner>().SpawnNovaCesta();
 
-            // opcional: destruir a cesta atual (pra não ficar acumulando)
+            
             Destroy(gameObject);
         }
     }

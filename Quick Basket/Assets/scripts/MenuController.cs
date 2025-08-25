@@ -4,24 +4,25 @@ using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour
 {
-    public Button continuarButton; // arraste o botão "Continuar" no inspector
+    public Button continuarButton; 
 
     void Start()
     {
-        // Desativa o botão continuar, pois não há mais save
+        
         if (continuarButton != null)
-            continuarButton.gameObject.SetActive(false);
+            continuarButton.gameObject.SetActive(PlayerPrefs.HasKey("arenaAtual"));
     }
 
     public void Jogar()
     {
-        // Novo jogo
+        
+        PlayerPrefs.DeleteAll();
         SceneManager.LoadScene("Jogo");
     }
 
     public void Continuar()
     {
-        // Agora Continuar faz a mesma coisa que Jogar
+        
         SceneManager.LoadScene("Jogo");
     }
 

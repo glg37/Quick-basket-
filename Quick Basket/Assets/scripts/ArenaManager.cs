@@ -19,7 +19,15 @@ public class ArenaManager : MonoBehaviour
 
     void Start()
     {
-        AtualizarArenas();
+        
+        if (PlayerPrefs.HasKey("arenaAtual"))
+        {
+            CarregarJogo();
+        }
+        else
+        {
+            AtualizarArenas();
+        }
     }
 
     public void NovoJogo()
@@ -27,6 +35,7 @@ public class ArenaManager : MonoBehaviour
         arenaAtual = 0;
         acertos = 0;
         AtualizarArenas();
+        SalvarJogo();
     }
 
     public void AcertouCesta()
@@ -70,5 +79,35 @@ public class ArenaManager : MonoBehaviour
     public Transform GetArenaAtualTransform()
     {
         return arenas[arenaAtual].transform;
+    }
+
+    
+    public void SalvarJogo()
+    {
+        PlayerPrefs.SetInt("arenaAtual", arenaAtual);
+        PlayerPrefs.SetInt("acertos", acertos);
+
+     
+        PlayerPrefs.SetFloat("bolaX", bola.position.x);
+        PlayerPrefs.SetFloat("bolaY", bola.position.y);
+        PlayerPrefs.SetFloat("bolaZ", bola.position.z);
+
+        PlayerPrefs.Save();
+        Debug.Log("Jogo salvo!");
+    }
+
+    public void CarregarJogo()
+    {
+        arenaAtual = PlayerPrefs.GetInt("arenaAtual", 0);
+        acertos = PlayerPrefs.GetInt("acertos", 0);
+
+        float x = PlayerPrefs.GetFloat("bolaX", 0f);
+        float y = PlayerPrefs.GetFloat("bolaY", 0f);
+        float z = PlayerPrefs.GetFloat("bolaZ", 0f);
+
+        bola.position = new Vector3(x, y, z);
+
+        AtualizarArenas();
+        Debug.Log("Jogo carregado!");
     }
 }
