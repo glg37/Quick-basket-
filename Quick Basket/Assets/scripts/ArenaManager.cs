@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class ArenaManager : MonoBehaviour
 {
@@ -19,7 +20,6 @@ public class ArenaManager : MonoBehaviour
 
     void Start()
     {
-        
         if (PlayerPrefs.HasKey("arenaAtual"))
         {
             CarregarJogo();
@@ -27,24 +27,6 @@ public class ArenaManager : MonoBehaviour
         else
         {
             AtualizarArenas();
-        }
-    }
-
-    public void NovoJogo()
-    {
-        arenaAtual = 0;
-        acertos = 0;
-        AtualizarArenas();
-        SalvarJogo();
-    }
-
-    public void AcertouCesta()
-    {
-        acertos++;
-
-        if (acertos >= cestasParaDescer[arenaAtual])
-        {
-            DescerArena();
         }
     }
 
@@ -65,9 +47,7 @@ public class ArenaManager : MonoBehaviour
     void AtualizarArenas()
     {
         for (int i = 0; i < arenas.Length; i++)
-        {
             arenas[i].SetActive(i == arenaAtual);
-        }
 
         if (arenaAtual < posicoesCamera.Length)
             mainCamera.transform.position = posicoesCamera[arenaAtual];
@@ -76,22 +56,31 @@ public class ArenaManager : MonoBehaviour
             mainCamera.backgroundColor = coresArenas[arenaAtual];
     }
 
-    public Transform GetArenaAtualTransform()
+    public void AcertouCesta()
     {
-        return arenas[arenaAtual].transform;
+        acertos++;
+        if (acertos >= cestasParaDescer[arenaAtual])
+            DescerArena();
     }
 
-    
+    public void NovoJogo()
+    {
+        arenaAtual = 0;
+        acertos = 0;
+        AtualizarArenas();
+        SalvarJogo();
+    }
+
+    public Transform GetArenaAtualTransform() => arenas[arenaAtual].transform;
+    public int GetArenaAtualIndex() => arenaAtual;
+
     public void SalvarJogo()
     {
         PlayerPrefs.SetInt("arenaAtual", arenaAtual);
         PlayerPrefs.SetInt("acertos", acertos);
-
-     
         PlayerPrefs.SetFloat("bolaX", bola.position.x);
         PlayerPrefs.SetFloat("bolaY", bola.position.y);
         PlayerPrefs.SetFloat("bolaZ", bola.position.z);
-
         PlayerPrefs.Save();
         Debug.Log("Jogo salvo!");
     }
@@ -100,13 +89,10 @@ public class ArenaManager : MonoBehaviour
     {
         arenaAtual = PlayerPrefs.GetInt("arenaAtual", 0);
         acertos = PlayerPrefs.GetInt("acertos", 0);
-
         float x = PlayerPrefs.GetFloat("bolaX", 0f);
         float y = PlayerPrefs.GetFloat("bolaY", 0f);
         float z = PlayerPrefs.GetFloat("bolaZ", 0f);
-
         bola.position = new Vector3(x, y, z);
-
         AtualizarArenas();
         Debug.Log("Jogo carregado!");
     }
