@@ -15,10 +15,14 @@ public class BasketSpawner : MonoBehaviour
     [Header("Arena Manager")]
     public ArenaManager arenaManager;
 
-    [Header("Configuração do Movimento")]
-    [Tooltip("Índice da arena que terá cestas móveis. A primeira arena é 0.")]
+    [Header("Configuração do Movimento da Cesta")]
     public int arenaComMovimento = 0;
     public float velocidadeMovimento = 2f;
+
+    [Header("Obstáculo Móvel")]
+    public GameObject obstaculoPrefab;
+    public int arenaComObstaculo = 2;
+    public float alturaDoObstaculo = 0.3f;
 
     private GameObject cestaAtual;
     private bool ultimaCestaEsquerda = false;
@@ -30,15 +34,14 @@ public class BasketSpawner : MonoBehaviour
 
     public void SpawnNovaCesta()
     {
-       
+        
         if (cestaAtual != null)
             Destroy(cestaAtual);
 
-    
         float xPos = ultimaCestaEsquerda ? xDireita : xEsquerda;
         ultimaCestaEsquerda = !ultimaCestaEsquerda;
 
-       
+        
         Transform arenaAtualTransform = arenaManager.GetArenaAtualTransform();
         float yBase = arenaAtualTransform.position.y;
         float yPos = yBase + Random.Range(alturaMinimaRelativa, alturaMaximaRelativa);
@@ -47,7 +50,10 @@ public class BasketSpawner : MonoBehaviour
         cestaAtual = Instantiate(cestaPrefab, new Vector2(xPos, yPos), Quaternion.identity);
         cestaAtual.tag = "Basket";
 
-        if (arenaManager.GetArenaAtualIndex() == arenaComMovimento)
+        int arenaIndex = arenaManager.GetArenaAtualIndex();
+
+        
+        if (arenaIndex == arenaComMovimento)
         {
             BasketMover mover = cestaAtual.AddComponent<BasketMover>();
             mover.limiteEsquerda = xEsquerda;
@@ -55,7 +61,25 @@ public class BasketSpawner : MonoBehaviour
             mover.velocidade = velocidadeMovimento;
         }
 
-        
+      
+        if (arenaIndex == arenaComObstaculo && obstaculoPrefab != null)
+        {
+            Vector3 posObstaculo = cestaAtual.transform.position + Vector3.up * alturaDoObstaculo;
+            GameObject obstaculo = Instantiate(obstaculoPrefab, posObstaculo, Quaternion.identity);
+
+            
+            obstaculo.transform.SetParent(cestaAtual.transform);
+
+           
+            ObstaculoMover moverObstaculo = obstaculo.GetComponent<ObstaculoMover>();
+            if (moverObstaculo != null)
+            {
+                moverObstaculo.limiteEsquerda = xEsquerda;
+                moverObstaculo.limiteDireita = xDireita;
+            }
+        }
+
+     
         Ball ballScript = ball.GetComponent<Ball>();
         if (ballScript != null)
         {

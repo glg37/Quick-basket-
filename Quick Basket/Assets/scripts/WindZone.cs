@@ -3,7 +3,7 @@ using UnityEngine;
 public class WindZone : MonoBehaviour
 {
     [Header("Força do Vento")]
-    public float windForce = 2f; // positivo = direita, negativo = esquerda
+    public float windForce = 2f; 
 
     private void OnTriggerStay2D(Collider2D other)
     {

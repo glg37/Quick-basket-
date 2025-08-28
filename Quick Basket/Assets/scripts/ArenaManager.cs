@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class ArenaManager : MonoBehaviour
 {
@@ -13,6 +12,10 @@ public class ArenaManager : MonoBehaviour
 
     [Header("Cores das Arenas")]
     public Color[] coresArenas;
+
+    [Header("Neblina (Fog)")]
+    public GameObject fogPanel;   // Arraste o Panel aqui
+    public int arenaComFog = 1;   // Índice da arena que terá neblina (0 = primeira, 1 = segunda...)
 
     private int arenaAtual = 0;
     private int acertos = 0;
@@ -46,14 +49,21 @@ public class ArenaManager : MonoBehaviour
 
     void AtualizarArenas()
     {
+        // Ativar apenas a arena atual
         for (int i = 0; i < arenas.Length; i++)
             arenas[i].SetActive(i == arenaAtual);
 
+        // Atualizar posição da câmera
         if (arenaAtual < posicoesCamera.Length)
             mainCamera.transform.position = posicoesCamera[arenaAtual];
 
+        // Atualizar cor de fundo
         if (arenaAtual < coresArenas.Length)
             mainCamera.backgroundColor = coresArenas[arenaAtual];
+
+        // Ativar neblina apenas na arena configurada
+        if (fogPanel != null)
+            fogPanel.SetActive(arenaAtual == arenaComFog);
     }
 
     public void AcertouCesta()

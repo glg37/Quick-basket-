@@ -1,78 +1,66 @@
 using UnityEngine;
-using TMPro; 
-using UnityEngine.UI; 
-using UnityEngine.SceneManagement; 
+using TMPro;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Timer : MonoBehaviour
 {
-    public float tempoLimite = 60f; 
+    public float tempoLimite = 60f;
     private float tempoRestante;
-    public TextMeshProUGUI timerTexto; 
-    public GameObject gameOverPanel; 
-    public Button restartButton; 
+    public TextMeshProUGUI timerTexto;
+    public GameObject gameOverPanel;
+    public Button restartButton;
 
-    
+    private bool tempoPausado = false; // flag para saber se o timer está pausado
+
     void Start()
     {
         tempoRestante = tempoLimite;
-        gameOverPanel.SetActive(false); 
-        restartButton.gameObject.SetActive(false); 
+        gameOverPanel.SetActive(false);
+        restartButton.gameObject.SetActive(false);
 
         if (timerTexto != null)
-        {
             timerTexto.text = "Tempo: " + tempoRestante.ToString("F0");
-        }
 
-        
         restartButton.onClick.AddListener(RestartGame);
     }
 
-  
     void Update()
     {
-        if (tempoRestante > 0)
+        if (!tempoPausado && tempoRestante > 0)
         {
-            tempoRestante -= Time.deltaTime; 
+            tempoRestante -= Time.deltaTime;
             if (timerTexto != null)
-            {
-                timerTexto.text = "Tempo: " + tempoRestante.ToString("F0"); 
-            }
+                timerTexto.text = "Tempo: " + tempoRestante.ToString("F0");
         }
-        else
+        else if (tempoRestante <= 0)
         {
-        
             TempoAcabou();
         }
     }
 
-  
+    public void PausarTimer(float duracao)
+    {
+        StartCoroutine(PausarTemporario(duracao));
+    }
+
+    private System.Collections.IEnumerator PausarTemporario(float duracao)
+    {
+        tempoPausado = true;
+        yield return new WaitForSecondsRealtime(duracao);
+        tempoPausado = false;
+    }
+
     void TempoAcabou()
     {
-       
         gameOverPanel.SetActive(true);
-        restartButton.gameObject.SetActive(true); 
-
-       
-        PausarJogo();
+        restartButton.gameObject.SetActive(true);
     }
 
-    void PausarJogo()
-    {
-        Time.timeScale = 0f; 
-    }
-
-   
     void RestartGame()
     {
-
-        Time.timeScale = 1f; 
-
-     
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-
-        
         tempoRestante = tempoLimite;
-
         gameOverPanel.SetActive(false);
         restartButton.gameObject.SetActive(false);
     }

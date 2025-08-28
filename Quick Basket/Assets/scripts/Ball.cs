@@ -29,11 +29,20 @@ public class Ball : MonoBehaviour
 
         rb.linearVelocity = Vector2.zero;
 
-        Vector2 direcao = (cestaAtual.position - transform.position).normalized;
+        Vector2 diferenca = cestaAtual.position - transform.position;
+
+        
+        if (diferenca.magnitude < 0.5f)
+        {
+            diferenca = diferenca.normalized * 0.5f;
+        }
+
+        Vector2 direcao = diferenca.normalized;
         Vector2 forca = new Vector2(direcao.x, direcao.y + fatorAltura) * forcaLancamento;
 
         rb.AddForce(forca, ForceMode2D.Impulse);
     }
+
 
     public void SetCestaAlvo(Transform novaCesta)
     {
