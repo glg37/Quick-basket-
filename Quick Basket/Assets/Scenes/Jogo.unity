@@ -704,7 +704,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!58 &149990501
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2344,7 +2344,7 @@ GameObject:
   - component: {fileID: 580523108}
   - component: {fileID: 580523107}
   m_Layer: 0
-  m_Name: Bola de basquete_0
+  m_Name: BOLA
   m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2416,7 +2416,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 1.4
   m_Material: {fileID: 6200000, guid: 1f5fcad0692cefa4382285cdcc005bbe, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
@@ -3867,7 +3867,7 @@ MonoBehaviour:
   - {r: 0.7264151, g: 0.7046525, b: 0.2021627, a: 0}
   - {r: 0.5754717, g: 0.23073158, b: 0.44821838, a: 0}
   - {r: 0.1980242, g: 0.4716981, b: 0.43194166, a: 0}
-  bola: {fileID: 149990504}
+  bola: {fileID: 580523111}
   gravidadePorArena:
   - 3
   - 3
