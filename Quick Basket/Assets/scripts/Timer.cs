@@ -11,7 +11,7 @@ public class Timer : MonoBehaviour
     public GameObject gameOverPanel;
     public Button restartButton;
 
-    private bool tempoPausado = false; // flag para saber se o timer está pausado
+    private bool tempoPausado = false; 
 
     void Start()
     {
@@ -63,5 +63,17 @@ public class Timer : MonoBehaviour
         tempoRestante = tempoLimite;
         gameOverPanel.SetActive(false);
         restartButton.gameObject.SetActive(false);
+    }
+    public float GetTempoRestante()
+    {
+        return tempoRestante;
+    }
+
+    
+    public void SetTempoRestante(float tempo)
+    {
+        tempoRestante = tempo;
+        if (timerTexto != null)
+            timerTexto.text = "Tempo: " + tempoRestante.ToString("F0");
     }
 }

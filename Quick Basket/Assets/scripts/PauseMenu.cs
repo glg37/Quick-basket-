@@ -20,7 +20,6 @@ public class PauseMenu : MonoBehaviour
         quitButton.onClick.AddListener(QuitToMenu);
         saveAndQuitButton.onClick.AddListener(SaveAndQuit);
 
-        
         arenaManager = FindFirstObjectByType<ArenaManager>();
     }
 
@@ -55,11 +54,18 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
-   
     void SaveAndQuit()
     {
+      
         if (arenaManager != null)
             arenaManager.SalvarJogo();
+
+       
+        Timer timer = FindFirstObjectByType<Timer>();
+        if (timer != null)
+            PlayerPrefs.SetFloat("tempoRestante", timer.GetTempoRestante());
+
+        PlayerPrefs.Save();
 
         Time.timeScale = 1f;
         SceneManager.LoadScene("Menu");

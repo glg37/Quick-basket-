@@ -8,11 +8,15 @@ public class Ball : MonoBehaviour
 
     private Rigidbody2D rb;
     private Transform cestaAtual;
+    private ArenaManager arenaManager;
+
+    [Header("Arena com lançamento invertido")]
+    public int arenaInvertida = 1;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-      
+        arenaManager = FindFirstObjectByType<ArenaManager>();
     }
 
     void Update()
@@ -27,18 +31,26 @@ public class Ball : MonoBehaviour
     {
         if (cestaAtual == null) return;
 
+       
         rb.linearVelocity = Vector2.zero;
 
+       
         Vector2 diferenca = cestaAtual.position - transform.position;
 
         
-        if (diferenca.magnitude < 0.5f)
+        float distanciaMinima = 2f; 
+        if (diferenca.magnitude < distanciaMinima)
         {
-            diferenca = diferenca.normalized * 0.5f;
+            diferenca = diferenca.normalized * distanciaMinima;
         }
 
         Vector2 direcao = diferenca.normalized;
-        Vector2 forca = new Vector2(direcao.x, direcao.y + fatorAltura) * forcaLancamento;
+        Vector2 forca;
+
+        if (arenaManager.GetArenaAtualIndex() == arenaInvertida)
+            forca = new Vector2(direcao.x, direcao.y - fatorAltura) * forcaLancamento;
+        else
+            forca = new Vector2(direcao.x, direcao.y + fatorAltura) * forcaLancamento;
 
         rb.AddForce(forca, ForceMode2D.Impulse);
     }
