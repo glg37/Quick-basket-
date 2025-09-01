@@ -8,7 +8,7 @@ public class MenuController : MonoBehaviour
     public Button continuarButton;
 
     [Header("UI Painéis")]
-    public GameObject painelCreditos; // Arraste seu painel de créditos aqui no Inspector
+    public GameObject painelCreditos; 
 
     void Start()
     {
@@ -16,7 +16,7 @@ public class MenuController : MonoBehaviour
             continuarButton.gameObject.SetActive(PlayerPrefs.HasKey("arenaAtual"));
 
         if (painelCreditos != null)
-            painelCreditos.SetActive(false); // garante que começa fechado
+            painelCreditos.SetActive(false); 
     }
 
     public void Jogar()

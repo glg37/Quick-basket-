@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class ArenaManager : MonoBehaviour
 {
@@ -27,7 +27,10 @@ public class ArenaManager : MonoBehaviour
     public int arenaComFog = 1;
 
     [Header("Teto das Arenas")]
-    public GameObject[] tetos; // um teto para cada arena
+    public GameObject[] tetos;
+
+    [Header("UI")]
+    public GameObject painelVitoria; // seu painel de vitória
 
     private int arenaAtual = 0;
     private int acertos = 0;
@@ -35,11 +38,11 @@ public class ArenaManager : MonoBehaviour
     void Start()
     {
         rbBola = bola.GetComponent<Rigidbody2D>();
+        if (PlayerPrefs.HasKey("arenaAtual")) CarregarJogo();
+        else AtualizarArenas();
 
-        if (PlayerPrefs.HasKey("arenaAtual"))
-            CarregarJogo();
-        else
-            AtualizarArenas();
+        if (painelVitoria != null)
+            painelVitoria.SetActive(false); // garante que esteja desativado no começo
     }
 
     void DescerArena()
@@ -49,16 +52,16 @@ public class ArenaManager : MonoBehaviour
             arenaAtual++;
             acertos = 0;
             AtualizarArenas();
-
-            // a ativação do teto será feita via trigger ou função externa
         }
         else
         {
-            Debug.Log("Última arena alcançada!");
+            // Última arena completada  Vitória
+            Debug.Log("Vitória!");
+            if (painelVitoria != null)
+                painelVitoria.SetActive(true);
         }
     }
 
-    // função pública para ativar o teto de uma arena específica
     public void AtivarTetoDaArena(int index)
     {
         if (index >= 0 && index < tetos.Length && tetos[index] != null)
@@ -67,23 +70,18 @@ public class ArenaManager : MonoBehaviour
 
     void AtualizarArenas()
     {
-        // ativa só a arena atual
         for (int i = 0; i < arenas.Length; i++)
             arenas[i].SetActive(i == arenaAtual);
 
-        // posiciona câmera
         if (arenaAtual < posicoesCamera.Length)
             mainCamera.transform.position = posicoesCamera[arenaAtual];
 
-        // cor de fundo
         if (arenaAtual < coresArenas.Length)
             mainCamera.backgroundColor = coresArenas[arenaAtual];
 
-        // fog / neblina
         if (fogPanel != null)
             fogPanel.SetActive(arenaAtual == arenaComFog);
 
-        // gravidade da bola
         if (arenaAtual < gravidadePorArena.Length)
             rbBola.gravityScale = gravidadePorArena[arenaAtual];
         else
@@ -102,12 +100,19 @@ public class ArenaManager : MonoBehaviour
         arenaAtual = 0;
         acertos = 0;
 
-        // desativa todos os tetos
         foreach (GameObject teto in tetos)
             if (teto != null) teto.SetActive(false);
 
         AtualizarArenas();
         SalvarJogo();
+
+        if (painelVitoria != null)
+            painelVitoria.SetActive(false); // esconde o painel ao reiniciar
+    }
+
+    public void VoltarParaMenu()
+    {
+        SceneManager.LoadScene("Menu"); // substitua "Menu" pelo nome da sua cena de menu
     }
 
     public Transform GetArenaAtualTransform() => arenas[arenaAtual].transform;
@@ -120,7 +125,6 @@ public class ArenaManager : MonoBehaviour
         PlayerPrefs.SetFloat("bolaX", bola.position.x);
         PlayerPrefs.SetFloat("bolaY", bola.position.y);
         PlayerPrefs.SetFloat("bolaZ", bola.position.z);
-
         PlayerPrefs.Save();
         Debug.Log("Jogo salvo!");
     }
@@ -134,19 +138,15 @@ public class ArenaManager : MonoBehaviour
         float z = PlayerPrefs.GetFloat("bolaZ", 0f);
         bola.position = new Vector3(x, y, z);
 
-       
         foreach (GameObject teto in tetos)
             if (teto != null) teto.SetActive(false);
 
-        
         for (int i = 0; i < arenaAtual && i < tetos.Length; i++)
             if (tetos[i] != null) tetos[i].SetActive(true);
 
         AtualizarArenas();
         Debug.Log("Jogo carregado!");
 
-        
-        
         if (PlayerPrefs.HasKey("tempoRestante"))
         {
             Timer timer = FindFirstObjectByType<Timer>();

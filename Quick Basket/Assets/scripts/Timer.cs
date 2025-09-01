@@ -11,10 +11,13 @@ public class Timer : MonoBehaviour
     public GameObject gameOverPanel;
     public Button restartButton;
 
-    private bool tempoPausado = false; 
+    private bool tempoPausado = false;
 
     void Start()
     {
+        
+        Time.timeScale = 1f;
+
         tempoRestante = tempoLimite;
         gameOverPanel.SetActive(false);
         restartButton.gameObject.SetActive(false);
@@ -55,15 +58,19 @@ public class Timer : MonoBehaviour
     {
         gameOverPanel.SetActive(true);
         restartButton.gameObject.SetActive(true);
+
+      
+        Time.timeScale = 0f;
     }
 
     void RestartGame()
     {
+        
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        tempoRestante = tempoLimite;
-        gameOverPanel.SetActive(false);
-        restartButton.gameObject.SetActive(false);
     }
+
+
     public float GetTempoRestante()
     {
         return tempoRestante;
