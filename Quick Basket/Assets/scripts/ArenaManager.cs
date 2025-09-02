@@ -107,12 +107,12 @@ public class ArenaManager : MonoBehaviour
         SalvarJogo();
 
         if (painelVitoria != null)
-            painelVitoria.SetActive(false); // esconde o painel ao reiniciar
+            painelVitoria.SetActive(false); 
     }
 
     public void VoltarParaMenu()
     {
-        SceneManager.LoadScene("Menu"); // substitua "Menu" pelo nome da sua cena de menu
+        SceneManager.LoadScene("Menu"); 
     }
 
     public Transform GetArenaAtualTransform() => arenas[arenaAtual].transform;

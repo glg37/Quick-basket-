@@ -3,8 +3,8 @@ using UnityEngine;
 public class BasketMover : MonoBehaviour
 {
     public float velocidade = 2f;
-    public float limiteEsquerda = -3f;
-    public float limiteDireita = 3f;
+    public float limiteEsquerda = -8f;
+    public float limiteDireita = 8f;
 
     private int direcao = 1;
 
