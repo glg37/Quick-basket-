@@ -8,7 +8,8 @@ public class MenuController : MonoBehaviour
     public Button continuarButton;
 
     [Header("UI Painéis")]
-    public GameObject painelCreditos; 
+    public GameObject painelCreditos;
+    public GameObject painelLoja; 
 
     void Start()
     {
@@ -16,7 +17,10 @@ public class MenuController : MonoBehaviour
             continuarButton.gameObject.SetActive(PlayerPrefs.HasKey("arenaAtual"));
 
         if (painelCreditos != null)
-            painelCreditos.SetActive(false); 
+            painelCreditos.SetActive(false);
+
+        if (painelLoja != null)
+            painelLoja.SetActive(false); 
     }
 
     public void Jogar()
@@ -30,8 +34,6 @@ public class MenuController : MonoBehaviour
         SceneManager.LoadScene("Jogo");
     }
 
-   
-
     public void AbrirCreditos()
     {
         if (painelCreditos != null)
@@ -42,5 +44,18 @@ public class MenuController : MonoBehaviour
     {
         if (painelCreditos != null)
             painelCreditos.SetActive(false);
+    }
+
+   
+    public void AbrirLoja()
+    {
+        if (painelLoja != null)
+            painelLoja.SetActive(true);
+    }
+
+    public void FecharLoja()
+    {
+        if (painelLoja != null)
+            painelLoja.SetActive(false);
     }
 }
