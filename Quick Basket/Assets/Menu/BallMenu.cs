@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems; 
 
 public class BallMenu : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class BallMenu : MonoBehaviour
     private Rigidbody2D rb;
     private Transform cestaAtual;
 
-    [Header("Lançamento invertido (simulação)")]
+    [Header("Lanï¿½amento invertido (simulaï¿½ï¿½o)")]
     public bool lancamentoInvertido = false;
 
     void Start()
@@ -21,7 +22,11 @@ public class BallMenu : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            LancaBola();
+           
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                LancaBola();
+            }
         }
     }
 
