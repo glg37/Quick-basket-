@@ -30,7 +30,10 @@ public class ArenaManager : MonoBehaviour
     public GameObject[] tetos;
 
     [Header("UI")]
-    public GameObject painelVitoria; // seu painel de vitória
+    public GameObject painelVitoria;
+
+    [Header("Moedas por Arena")]
+    public HardCoin[] moedasPorArena;
 
     private int arenaAtual = 0;
     private int acertos = 0;
@@ -42,7 +45,7 @@ public class ArenaManager : MonoBehaviour
         else AtualizarArenas();
 
         if (painelVitoria != null)
-            painelVitoria.SetActive(false); // garante que esteja desativado no começo
+            painelVitoria.SetActive(false);
     }
 
     void DescerArena()
@@ -55,7 +58,6 @@ public class ArenaManager : MonoBehaviour
         }
         else
         {
-            // Última arena completada  Vitória
             Debug.Log("Vitória!");
             if (painelVitoria != null)
                 painelVitoria.SetActive(true);
@@ -70,22 +72,40 @@ public class ArenaManager : MonoBehaviour
 
     void AtualizarArenas()
     {
+        // Ativa somente a arena atual
         for (int i = 0; i < arenas.Length; i++)
             arenas[i].SetActive(i == arenaAtual);
 
+        // Move a câmera
         if (arenaAtual < posicoesCamera.Length)
             mainCamera.transform.position = posicoesCamera[arenaAtual];
 
+        // Muda cor da câmera
         if (arenaAtual < coresArenas.Length)
             mainCamera.backgroundColor = coresArenas[arenaAtual];
 
+        // Ativa fog se for a arena configurada
         if (fogPanel != null)
             fogPanel.SetActive(arenaAtual == arenaComFog);
 
+        // Configura gravidade
         if (arenaAtual < gravidadePorArena.Length)
             rbBola.gravityScale = gravidadePorArena[arenaAtual];
         else
             rbBola.gravityScale = gravidadePadrao;
+
+        //  Ativa a moeda da arena atual e desativa as demais
+        for (int i = 0; i < moedasPorArena.Length; i++)
+        {
+            if (moedasPorArena[i] != null)
+            {
+                moedasPorArena[i].gameObject.SetActive(i == arenaAtual);
+                if (i == arenaAtual)
+                    moedasPorArena[i].AtivarNaArena();
+                else
+                    moedasPorArena[i].PararMoeda();
+            }
+        }
     }
 
     public void AcertouCesta()
@@ -107,12 +127,12 @@ public class ArenaManager : MonoBehaviour
         SalvarJogo();
 
         if (painelVitoria != null)
-            painelVitoria.SetActive(false); 
+            painelVitoria.SetActive(false);
     }
 
     public void VoltarParaMenu()
     {
-        SceneManager.LoadScene("Menu"); 
+        SceneManager.LoadScene("Menu");
     }
 
     public Transform GetArenaAtualTransform() => arenas[arenaAtual].transform;
