@@ -32,17 +32,16 @@ public class ArenaManager : MonoBehaviour
     [Header("UI")]
     public GameObject painelVitoria;
 
-    [Header("Moedas por Arena")]
-    public HardCoin[] moedasPorArena;
-
     private int arenaAtual = 0;
     private int acertos = 0;
 
     void Start()
     {
         rbBola = bola.GetComponent<Rigidbody2D>();
-        if (PlayerPrefs.HasKey("arenaAtual")) CarregarJogo();
-        else AtualizarArenas();
+        if (PlayerPrefs.HasKey("arenaAtual"))
+            CarregarJogo();
+        else
+            AtualizarArenas();
 
         if (painelVitoria != null)
             painelVitoria.SetActive(false);
@@ -93,19 +92,6 @@ public class ArenaManager : MonoBehaviour
             rbBola.gravityScale = gravidadePorArena[arenaAtual];
         else
             rbBola.gravityScale = gravidadePadrao;
-
-        //  Ativa a moeda da arena atual e desativa as demais
-        for (int i = 0; i < moedasPorArena.Length; i++)
-        {
-            if (moedasPorArena[i] != null)
-            {
-                moedasPorArena[i].gameObject.SetActive(i == arenaAtual);
-                if (i == arenaAtual)
-                    moedasPorArena[i].AtivarNaArena();
-                else
-                    moedasPorArena[i].PararMoeda();
-            }
-        }
     }
 
     public void AcertouCesta()
