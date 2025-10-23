@@ -5,24 +5,20 @@ public class HardCoin : MonoBehaviour
 {
     [Header("Configurações de Movimento")]
     public float velocidade = 5f;
-
     [Tooltip("Amplitude do movimento ondulado (vertical)")]
     public float altura = 2f;
-
     [Tooltip("Altura mínima e máxima em que a moeda pode voar")]
     public float alturaMin = -1f;
     public float alturaMax = 3f;
-
     public float tempoVisivel = 3f;      // Tempo que ela fica voando
     public float tempoReaparecer = 10f;  // Tempo até aparecer de novo
-
-    [Header("Limites da tela")]
-    public Transform pontoEsquerda;
-    public Transform pontoDireita;
 
     private bool indoDireita = true;
     private bool ativa = false;
     private Vector3 posInicial;
+
+    private float limiteEsquerdo;
+    private float limiteDireito;
 
     private Animator anim;
     private SpriteRenderer spriteRenderer;
@@ -41,6 +37,13 @@ public class HardCoin : MonoBehaviour
 
     void Start()
     {
+        // Calcula limites da tela com base na câmera principal
+        Camera cam = Camera.main;
+        float alturaCamera = 2f * cam.orthographicSize;
+        float larguraCamera = alturaCamera * cam.aspect;
+        limiteEsquerdo = cam.transform.position.x - larguraCamera / 2f;
+        limiteDireito = cam.transform.position.x + larguraCamera / 2f;
+
         if (spriteRenderer != null) spriteRenderer.enabled = false;
         if (col2d != null) col2d.enabled = false;
 
@@ -61,8 +64,8 @@ public class HardCoin : MonoBehaviour
             transform.position.z
         );
 
-        if ((indoDireita && transform.position.x > pontoDireita.position.x) ||
-            (!indoDireita && transform.position.x < pontoEsquerda.position.x))
+        if ((indoDireita && transform.position.x > limiteDireito) ||
+            (!indoDireita && transform.position.x < limiteEsquerdo))
         {
             StartCoroutine(Desaparecer());
         }
@@ -79,12 +82,8 @@ public class HardCoin : MonoBehaviour
             float alturaY = Random.Range(alturaMin, alturaMax);
 
             // Define posição inicial
-            transform.position = new Vector3(
-                indoDireita ? pontoEsquerda.position.x : pontoDireita.position.x,
-                alturaY,
-                transform.position.z
-            );
-
+            float posX = indoDireita ? limiteEsquerdo : limiteDireito;
+            transform.position = new Vector3(posX, alturaY, transform.position.z);
             posInicial = transform.position;
 
             // Espelha sprite de acordo com a direção
@@ -123,7 +122,7 @@ public class HardCoin : MonoBehaviour
     {
         if (!other.CompareTag("Ball")) return;
 
-        Debug.Log(" Moeda coletada!");
+        Debug.Log("Moeda coletada!");
         if (anim != null && AnimatorHasParameter(anim, PARAM_COLETADA))
             anim.SetTrigger(PARAM_COLETADA);
 
