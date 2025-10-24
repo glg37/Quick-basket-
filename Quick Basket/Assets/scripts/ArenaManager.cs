@@ -32,12 +32,29 @@ public class ArenaManager : MonoBehaviour
     [Header("UI")]
     public GameObject painelVitoria;
 
+    [Header("Spawners de Moedas")]
+    public GameObject[] spawnersDeMoedasGO; // Arraste os emptys aqui
+    private CoinSpawner[] spawnersDeMoedas; // Vai guardar os componentes automaticamente
+
     private int arenaAtual = 0;
     private int acertos = 0;
+
+    void Awake()
+    {
+        // Inicializa o array de CoinSpawner pegando os componentes dos GameObjects
+        spawnersDeMoedas = new CoinSpawner[spawnersDeMoedasGO.Length];
+        for (int i = 0; i < spawnersDeMoedasGO.Length; i++)
+        {
+            spawnersDeMoedas[i] = spawnersDeMoedasGO[i].GetComponent<CoinSpawner>();
+            if (spawnersDeMoedas[i] == null)
+                Debug.LogWarning("O GameObject '" + spawnersDeMoedasGO[i].name + "' não possui CoinSpawner!");
+        }
+    }
 
     void Start()
     {
         rbBola = bola.GetComponent<Rigidbody2D>();
+
         if (PlayerPrefs.HasKey("arenaAtual"))
             CarregarJogo();
         else
@@ -92,6 +109,13 @@ public class ArenaManager : MonoBehaviour
             rbBola.gravityScale = gravidadePorArena[arenaAtual];
         else
             rbBola.gravityScale = gravidadePadrao;
+
+        // Ativa apenas o spawner de moedas da arena atual
+        for (int i = 0; i < spawnersDeMoedas.Length; i++)
+        {
+            if (spawnersDeMoedas[i] != null)
+                spawnersDeMoedas[i].AtivarSpawner(i == arenaAtual);
+        }
     }
 
     public void AcertouCesta()
