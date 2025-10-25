@@ -3,58 +3,37 @@ using UnityEngine.SceneManagement;
 
 public class ArenaManager : MonoBehaviour
 {
-    [Header("Arenas")]
     public GameObject[] arenas;
     public int[] cestasParaDescer;
-
-    [Header("Câmera")]
     public Camera mainCamera;
     public Vector3[] posicoesCamera;
-
-    [Header("Cores das Arenas")]
     public Color[] coresArenas;
-
-    [Header("Bola")]
     public Transform bola;
     private Rigidbody2D rbBola;
-
-    [Header("Configuração de Gravidade por Arena")]
     public float[] gravidadePorArena;
     public float gravidadePadrao = 1f;
-
-    [Header("Fog / Neblina")]
     public GameObject fogPanel;
     public int arenaComFog = 1;
-
-    [Header("Teto das Arenas")]
     public GameObject[] tetos;
-
-    [Header("UI")]
     public GameObject painelVitoria;
-
-    [Header("Spawners de Moedas")]
-    public GameObject[] spawnersDeMoedasGO; // Arraste os emptys aqui
-    private CoinSpawner[] spawnersDeMoedas; // Vai guardar os componentes automaticamente
+    public GameObject[] spawnersDeMoedasGO;
+    private CoinSpawner[] spawnersDeMoedas;
 
     private int arenaAtual = 0;
     private int acertos = 0;
 
     void Awake()
     {
-        // Inicializa o array de CoinSpawner pegando os componentes dos GameObjects
         spawnersDeMoedas = new CoinSpawner[spawnersDeMoedasGO.Length];
         for (int i = 0; i < spawnersDeMoedasGO.Length; i++)
         {
             spawnersDeMoedas[i] = spawnersDeMoedasGO[i].GetComponent<CoinSpawner>();
-            if (spawnersDeMoedas[i] == null)
-                Debug.LogWarning("O GameObject '" + spawnersDeMoedasGO[i].name + "' não possui CoinSpawner!");
         }
     }
 
     void Start()
     {
         rbBola = bola.GetComponent<Rigidbody2D>();
-
         if (PlayerPrefs.HasKey("arenaAtual"))
             CarregarJogo();
         else
@@ -74,7 +53,6 @@ public class ArenaManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Vitória!");
             if (painelVitoria != null)
                 painelVitoria.SetActive(true);
         }
@@ -88,34 +66,37 @@ public class ArenaManager : MonoBehaviour
 
     void AtualizarArenas()
     {
-        // Ativa somente a arena atual
+        for (int i = 0; i < spawnersDeMoedas.Length; i++)
+        {
+            if (spawnersDeMoedas[i] != null)
+            {
+                bool ativo = (i == arenaAtual);
+                if (!ativo)
+                    spawnersDeMoedas[i].AtivarSpawner(false);
+
+                spawnersDeMoedas[i].gameObject.SetActive(ativo);
+
+                if (ativo)
+                    spawnersDeMoedas[i].AtivarSpawner(true);
+            }
+        }
+
         for (int i = 0; i < arenas.Length; i++)
             arenas[i].SetActive(i == arenaAtual);
 
-        // Move a câmera
         if (arenaAtual < posicoesCamera.Length)
             mainCamera.transform.position = posicoesCamera[arenaAtual];
 
-        // Muda cor da câmera
         if (arenaAtual < coresArenas.Length)
             mainCamera.backgroundColor = coresArenas[arenaAtual];
 
-        // Ativa fog se for a arena configurada
         if (fogPanel != null)
             fogPanel.SetActive(arenaAtual == arenaComFog);
 
-        // Configura gravidade
         if (arenaAtual < gravidadePorArena.Length)
             rbBola.gravityScale = gravidadePorArena[arenaAtual];
         else
             rbBola.gravityScale = gravidadePadrao;
-
-        // Ativa apenas o spawner de moedas da arena atual
-        for (int i = 0; i < spawnersDeMoedas.Length; i++)
-        {
-            if (spawnersDeMoedas[i] != null)
-                spawnersDeMoedas[i].AtivarSpawner(i == arenaAtual);
-        }
     }
 
     public void AcertouCesta()
@@ -129,13 +110,11 @@ public class ArenaManager : MonoBehaviour
     {
         arenaAtual = 0;
         acertos = 0;
-
         foreach (GameObject teto in tetos)
             if (teto != null) teto.SetActive(false);
 
         AtualizarArenas();
         SalvarJogo();
-
         if (painelVitoria != null)
             painelVitoria.SetActive(false);
     }
@@ -156,7 +135,6 @@ public class ArenaManager : MonoBehaviour
         PlayerPrefs.SetFloat("bolaY", bola.position.y);
         PlayerPrefs.SetFloat("bolaZ", bola.position.z);
         PlayerPrefs.Save();
-        Debug.Log("Jogo salvo!");
     }
 
     public void CarregarJogo()
@@ -175,7 +153,6 @@ public class ArenaManager : MonoBehaviour
             if (tetos[i] != null) tetos[i].SetActive(true);
 
         AtualizarArenas();
-        Debug.Log("Jogo carregado!");
 
         if (PlayerPrefs.HasKey("tempoRestante"))
         {

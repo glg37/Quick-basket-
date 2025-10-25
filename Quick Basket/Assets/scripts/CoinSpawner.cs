@@ -5,52 +5,52 @@ public class CoinSpawner : MonoBehaviour
 {
     [Header("Configuração da Moeda")]
     public GameObject moedaPrefab;
-    [Tooltip("Tempo entre uma moeda sumir e a próxima aparecer")]
+    public float tempoInicial = 0.5f;
     public float intervaloSpawn = 5f;
-    [Tooltip("Velocidade da moeda se movendo horizontalmente")]
     public float velocidade = 2f;
-    [Tooltip("Altura mínima da moeda")]
     public float alturaMin = 1f;
-    [Tooltip("Altura máxima da moeda")]
     public float alturaMax = 4f;
 
     private GameObject moedaAtual;
-    private bool podeSpawnar = true;
+    private Coroutine spawnCoroutine;
+    private bool ativo = false;
 
-    void Start()
+    // Ativa ou desativa o spawner
+    public void AtivarSpawner(bool ativo)
     {
-        StartCoroutine(SpawnLoop());
+        this.ativo = ativo;
+
+        // Para spawn antigo e destrói moeda atual
+        if (!ativo)
+        {
+            if (spawnCoroutine != null)
+            {
+                StopCoroutine(spawnCoroutine);
+                spawnCoroutine = null;
+            }
+
+            if (moedaAtual != null)
+            {
+                Destroy(moedaAtual);
+                moedaAtual = null;
+            }
+        }
+        else
+        {
+            if (spawnCoroutine == null)
+                spawnCoroutine = StartCoroutine(SpawnLoop());
+        }
     }
 
-    IEnumerator SpawnLoop()
+    private IEnumerator SpawnLoop()
     {
-        while (true)
+        yield return new WaitForSeconds(tempoInicial);
+
+        while (ativo)
         {
-            if (podeSpawnar && moedaAtual == null && moedaPrefab != null)
+            if (moedaAtual == null && moedaPrefab != null)
             {
-                // Altura aleatória
-                float alturaAleatoria = Random.Range(alturaMin, alturaMax);
-
-                // Bordas da tela
-                Camera cam = Camera.main;
-                float zMoeda = 0f;
-                float xMin = cam.ViewportToWorldPoint(new Vector3(0, 0, zMoeda - cam.transform.position.z)).x - 1f;
-                float xMax = cam.ViewportToWorldPoint(new Vector3(1, 0, zMoeda - cam.transform.position.z)).x + 1f;
-
-                // Direção aleatória
-                bool indoDireita = Random.value > 0.5f;
-                Vector3 startPos = new Vector3(indoDireita ? xMin : xMax, alturaAleatoria, zMoeda);
-                Vector3 endPos = new Vector3(indoDireita ? xMax : xMin, alturaAleatoria, zMoeda);
-
-                // Cria a moeda
-                moedaAtual = Instantiate(moedaPrefab, startPos, Quaternion.identity);
-                moedaAtual.SetActive(true);
-
-                // Move a moeda de uma ponta à outra
-                yield return StartCoroutine(MovimentoMoeda(moedaAtual, startPos, endPos));
-
-                // Depois que a moeda some, espera intervalo antes de spawnar de novo
-                moedaAtual = null;
+                SpawnMoeda();
                 yield return new WaitForSeconds(intervaloSpawn);
             }
             else
@@ -60,7 +60,24 @@ public class CoinSpawner : MonoBehaviour
         }
     }
 
-    IEnumerator MovimentoMoeda(GameObject moeda, Vector3 startPos, Vector3 endPos)
+    private void SpawnMoeda()
+    {
+        float alturaAleatoria = Random.Range(alturaMin, alturaMax);
+
+        Camera cam = Camera.main;
+        float zMoeda = 0f;
+        float xMin = cam.ViewportToWorldPoint(new Vector3(0, 0, zMoeda - cam.transform.position.z)).x - 1f;
+        float xMax = cam.ViewportToWorldPoint(new Vector3(1, 0, zMoeda - cam.transform.position.z)).x + 1f;
+
+        bool indoDireita = Random.value > 0.5f;
+        Vector3 startPos = new Vector3(indoDireita ? xMin : xMax, alturaAleatoria, zMoeda);
+        Vector3 endPos = new Vector3(indoDireita ? xMax : xMin, alturaAleatoria, zMoeda);
+
+        moedaAtual = Instantiate(moedaPrefab, startPos, Quaternion.identity);
+        StartCoroutine(MovimentoMoeda(moedaAtual, startPos, endPos));
+    }
+
+    private IEnumerator MovimentoMoeda(GameObject moeda, Vector3 startPos, Vector3 endPos)
     {
         float t = 0f;
         float distancia = Vector3.Distance(startPos, endPos);
@@ -73,17 +90,6 @@ public class CoinSpawner : MonoBehaviour
         }
 
         if (moeda != null)
-            Destroy(moeda); // Destrói a moeda ao chegar no final
-    }
-
-    public void AtivarSpawner(bool ativo)
-    {
-        podeSpawnar = ativo;
-
-        if (!ativo && moedaAtual != null)
-        {
-            Destroy(moedaAtual);
-            moedaAtual = null;
-        }
+            Destroy(moeda);
     }
 }

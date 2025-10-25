@@ -32,7 +32,7 @@ public class Ball : MonoBehaviour
 
     void LancaBola(Vector2 alvo)
     {
-        rb.linearVelocity = Vector2.zero; // resetar velocidade
+        rb.linearVelocity = Vector2.zero; 
 
         Vector2 posAtual = transform.position;
         Vector2 deslocamento = alvo - posAtual;
@@ -40,30 +40,30 @@ public class Ball : MonoBehaviour
         float g = Mathf.Abs(Physics2D.gravity.y);
         float alturaExtra = fatorAltura;
 
-        // Evita sqrt de número negativo
+        
         float alturaTotal = deslocamento.y + alturaExtra;
         if (alturaTotal < 0.1f) alturaTotal = 0.1f;
 
-        // tempo estimado de voo seguro
+     
         float tempoVoo = Mathf.Sqrt((2 * alturaExtra) / g) + Mathf.Sqrt((2 * alturaTotal) / g);
         if (tempoVoo <= 0.1f) tempoVoo = 0.5f;
 
-        // cálculo da velocidade inicial
+      
         Vector2 velocidade = new Vector2(
             deslocamento.x / tempoVoo,
             Mathf.Sqrt(2 * g * alturaExtra)
         );
 
-        // Inverte Y se arena invertida
+       
         if (arenaManager != null && arenaManager.GetArenaAtualIndex() == arenaInvertida)
         {
             velocidade.y = -velocidade.y;
         }
 
-        // Aplica a força usando AddForce
+     
         rb.AddForce(velocidade * forcaLancamento, ForceMode2D.Impulse);
 
-        // Ignorar colisão com a cesta
+
         if (cestaAtual != null)
         {
             Collider2D ballCollider = GetComponent<Collider2D>();
