@@ -343,6 +343,8 @@ MonoBehaviour:
   neonMaterial: {fileID: 0}
   normalMaterial: {fileID: 0}
   arenaNeon: 1
+  somConfete: {fileID: 8300000, guid: 46870c748a236dd42afd65f675c7009b, type: 3}
+  volumeSom: 0.202
 --- !u!251 &6421165564428155592
 PlatformEffector2D:
   m_ObjectHideFlags: 0

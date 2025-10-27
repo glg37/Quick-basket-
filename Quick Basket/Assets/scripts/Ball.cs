@@ -8,6 +8,11 @@ public class Ball : MonoBehaviour
     [Range(0.5f, 5f)]
     public float fatorAltura = 2f;
 
+    [Header("Áudio")]
+    public AudioClip somLancamento; // Som da bola
+    [Range(0f, 1f)] public float volumeSom = 0.3f; // Volume ajustável
+    private AudioSource audioSource;
+
     private Rigidbody2D rb;
     private Transform cestaAtual;
     private ArenaManager arenaManager;
@@ -19,6 +24,12 @@ public class Ball : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         arenaManager = FindFirstObjectByType<ArenaManager>();
+
+        // Configura AudioSource
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.clip = somLancamento;
+        audioSource.volume = volumeSom; // Define o volume
     }
 
     void Update()
@@ -27,12 +38,15 @@ public class Ball : MonoBehaviour
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             LancaBola(mousePos);
+
+            if (somLancamento != null)
+                audioSource.Play(); // Toca som toda vez que clicar
         }
     }
 
     void LancaBola(Vector2 alvo)
     {
-        rb.linearVelocity = Vector2.zero; 
+        rb.linearVelocity = Vector2.zero; // Resetando velocidade antes de lançar
 
         Vector2 posAtual = transform.position;
         Vector2 deslocamento = alvo - posAtual;
@@ -40,29 +54,21 @@ public class Ball : MonoBehaviour
         float g = Mathf.Abs(Physics2D.gravity.y);
         float alturaExtra = fatorAltura;
 
-        
         float alturaTotal = deslocamento.y + alturaExtra;
         if (alturaTotal < 0.1f) alturaTotal = 0.1f;
 
-     
         float tempoVoo = Mathf.Sqrt((2 * alturaExtra) / g) + Mathf.Sqrt((2 * alturaTotal) / g);
         if (tempoVoo <= 0.1f) tempoVoo = 0.5f;
 
-      
         Vector2 velocidade = new Vector2(
             deslocamento.x / tempoVoo,
             Mathf.Sqrt(2 * g * alturaExtra)
         );
 
-       
         if (arenaManager != null && arenaManager.GetArenaAtualIndex() == arenaInvertida)
-        {
             velocidade.y = -velocidade.y;
-        }
 
-     
         rb.AddForce(velocidade * forcaLancamento, ForceMode2D.Impulse);
-
 
         if (cestaAtual != null)
         {
