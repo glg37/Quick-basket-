@@ -15,31 +15,27 @@ public class CoinSpawner : MonoBehaviour
     private Coroutine spawnCoroutine;
     private bool ativo = false;
 
-    // Ativa ou desativa o spawner
     public void AtivarSpawner(bool ativo)
     {
         this.ativo = ativo;
 
-        // Para spawn antigo e destrói moeda atual
-        if (!ativo)
+        // Para qualquer coroutine antiga
+        if (spawnCoroutine != null)
         {
-            if (spawnCoroutine != null)
-            {
-                StopCoroutine(spawnCoroutine);
-                spawnCoroutine = null;
-            }
+            StopCoroutine(spawnCoroutine);
+            spawnCoroutine = null;
+        }
 
-            if (moedaAtual != null)
-            {
-                Destroy(moedaAtual);
-                moedaAtual = null;
-            }
-        }
-        else
+        // Destrói qualquer moeda atual
+        if (moedaAtual != null)
         {
-            if (spawnCoroutine == null)
-                spawnCoroutine = StartCoroutine(SpawnLoop());
+            Destroy(moedaAtual);
+            moedaAtual = null;
         }
+
+        // Se ativar o spawner, começa a rotina de spawn
+        if (ativo)
+            spawnCoroutine = StartCoroutine(SpawnLoop());
     }
 
     private IEnumerator SpawnLoop()
@@ -62,23 +58,25 @@ public class CoinSpawner : MonoBehaviour
 
     private void SpawnMoeda()
     {
+        // A moeda nasce na posição do empty (o próprio spawner)
         float alturaAleatoria = Random.Range(alturaMin, alturaMax);
+        Vector3 spawnPos = transform.position + new Vector3(0, alturaAleatoria, 0);
 
+        moedaAtual = Instantiate(moedaPrefab, spawnPos, Quaternion.identity);
+        StartCoroutine(MovimentoMoeda(moedaAtual));
+    }
+
+    private IEnumerator MovimentoMoeda(GameObject moeda)
+    {
         Camera cam = Camera.main;
         float zMoeda = 0f;
         float xMin = cam.ViewportToWorldPoint(new Vector3(0, 0, zMoeda - cam.transform.position.z)).x - 1f;
         float xMax = cam.ViewportToWorldPoint(new Vector3(1, 0, zMoeda - cam.transform.position.z)).x + 1f;
 
         bool indoDireita = Random.value > 0.5f;
-        Vector3 startPos = new Vector3(indoDireita ? xMin : xMax, alturaAleatoria, zMoeda);
-        Vector3 endPos = new Vector3(indoDireita ? xMax : xMin, alturaAleatoria, zMoeda);
+        Vector3 startPos = moeda.transform.position;
+        Vector3 endPos = new Vector3(indoDireita ? xMax : xMin, startPos.y, startPos.z);
 
-        moedaAtual = Instantiate(moedaPrefab, startPos, Quaternion.identity);
-        StartCoroutine(MovimentoMoeda(moedaAtual, startPos, endPos));
-    }
-
-    private IEnumerator MovimentoMoeda(GameObject moeda, Vector3 startPos, Vector3 endPos)
-    {
         float t = 0f;
         float distancia = Vector3.Distance(startPos, endPos);
 

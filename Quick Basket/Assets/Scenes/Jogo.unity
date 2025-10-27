@@ -457,11 +457,11 @@ Transform:
   m_GameObject: {fileID: 160924564}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.101999, y: -76.6133, z: 0}
+  m_LocalPosition: {x: -1.1000004, y: -77.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 564418882}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &160924566
 MonoBehaviour:
@@ -478,7 +478,6 @@ MonoBehaviour:
   moedaPrefab: {fileID: 1937462941962674640, guid: 62f8506f68611c246af50fe631366752, type: 3}
   tempoInicial: 3
   intervaloSpawn: 3
-  tempoReaparecer: 5
   velocidade: 5
   alturaMin: 1
   alturaMax: 4
@@ -1326,11 +1325,11 @@ Transform:
   m_GameObject: {fileID: 296852603}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.601999, y: -36.2733, z: 0}
+  m_LocalPosition: {x: -0.6000004, y: -37.16, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 564418882}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &296852605
 MonoBehaviour:
@@ -1347,7 +1346,6 @@ MonoBehaviour:
   moedaPrefab: {fileID: 1937462941962674640, guid: 62f8506f68611c246af50fe631366752, type: 3}
   tempoInicial: 3
   intervaloSpawn: 3
-  tempoReaparecer: 5
   velocidade: 5
   alturaMin: 1
   alturaMax: 4
@@ -2178,44 +2176,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &564418881
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 564418882}
-  m_Layer: 0
-  m_Name: SpawnCoin
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &564418882
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 564418881}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.202, y: -0.8867, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1341271107}
-  - {fileID: 627152084}
-  - {fileID: 613361403}
-  - {fileID: 296852604}
-  - {fileID: 2052199785}
-  - {fileID: 669307234}
-  - {fileID: 160924565}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &573638284
 GameObject:
   m_ObjectHideFlags: 0
@@ -2534,11 +2494,11 @@ Transform:
   m_GameObject: {fileID: 613361402}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11.132, y: -26.1233, z: 0}
+  m_LocalPosition: {x: -0.069999695, y: -27.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 564418882}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &613361404
 MonoBehaviour:
@@ -2555,7 +2515,6 @@ MonoBehaviour:
   moedaPrefab: {fileID: 1937462941962674640, guid: 62f8506f68611c246af50fe631366752, type: 3}
   tempoInicial: 3
   intervaloSpawn: 3
-  tempoReaparecer: 5
   velocidade: 5
   alturaMin: 1
   alturaMax: 4
@@ -2593,7 +2552,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 116, y: 10.365}
+  m_AnchoredPosition: {x: 115, y: -0.000012875}
   m_SizeDelta: {x: 156.9556, y: 20.7298}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &627007302
@@ -2721,11 +2680,11 @@ Transform:
   m_GameObject: {fileID: 627152083}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.891999, y: -11.8433, z: 0}
+  m_LocalPosition: {x: -0.31000042, y: -12.73, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 564418882}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &627152085
 MonoBehaviour:
@@ -2742,7 +2701,6 @@ MonoBehaviour:
   moedaPrefab: {fileID: 1937462941962674640, guid: 62f8506f68611c246af50fe631366752, type: 3}
   tempoInicial: 3
   intervaloSpawn: 3
-  tempoReaparecer: 5
   velocidade: 5
   alturaMin: 1
   alturaMax: 4
@@ -2928,11 +2886,11 @@ Transform:
   m_GameObject: {fileID: 669307233}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11.202, y: -64.5133, z: 0}
+  m_LocalPosition: {x: 0, y: -65.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 564418882}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &669307235
 MonoBehaviour:
@@ -2949,7 +2907,6 @@ MonoBehaviour:
   moedaPrefab: {fileID: 1937462941962674640, guid: 62f8506f68611c246af50fe631366752, type: 3}
   tempoInicial: 3
   intervaloSpawn: 3
-  tempoReaparecer: 5
   velocidade: 5
   alturaMin: 1
   alturaMax: 4
@@ -5939,11 +5896,11 @@ Transform:
   m_GameObject: {fileID: 1341271106}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.992, y: 1.0967, z: 0}
+  m_LocalPosition: {x: -0.21000004, y: 0.20999998, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 564418882}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1341271108
 MonoBehaviour:
@@ -5960,7 +5917,6 @@ MonoBehaviour:
   moedaPrefab: {fileID: 1937462941962674640, guid: 62f8506f68611c246af50fe631366752, type: 3}
   tempoInicial: 3
   intervaloSpawn: 3
-  tempoReaparecer: 5
   velocidade: 5
   alturaMin: 1
   alturaMax: 4
@@ -9249,11 +9205,11 @@ Transform:
   m_GameObject: {fileID: 2052199784}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.601999, y: -51.5133, z: 0}
+  m_LocalPosition: {x: -0.6000004, y: -52.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 564418882}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2052199786
 MonoBehaviour:
@@ -9270,7 +9226,6 @@ MonoBehaviour:
   moedaPrefab: {fileID: 1937462941962674640, guid: 62f8506f68611c246af50fe631366752, type: 3}
   tempoInicial: 3
   intervaloSpawn: 3
-  tempoReaparecer: 5
   velocidade: 5
   alturaMin: 1
   alturaMax: 4
@@ -9425,5 +9380,11 @@ SceneRoots:
   - {fileID: 1420442962}
   - {fileID: 1253444352039290254}
   - {fileID: 6150839978331496834}
-  - {fileID: 564418882}
+  - {fileID: 1341271107}
+  - {fileID: 627152084}
+  - {fileID: 613361403}
+  - {fileID: 296852604}
+  - {fileID: 2052199785}
+  - {fileID: 669307234}
+  - {fileID: 160924565}
   - {fileID: 1067318658}

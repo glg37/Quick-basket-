@@ -3,11 +3,18 @@ using UnityEngine.SceneManagement;
 
 public class ArenaManager : MonoBehaviour
 {
+    [Header("Arenas e Spawners")]
     public GameObject[] arenas;
     public int[] cestasParaDescer;
+    public GameObject[] spawnersDeMoedasGO;
+    private CoinSpawner[] spawnersDeMoedas;
+
+    [Header("Câmera e Visual")]
     public Camera mainCamera;
     public Vector3[] posicoesCamera;
     public Color[] coresArenas;
+
+    [Header("Outros")]
     public Transform bola;
     private Rigidbody2D rbBola;
     public float[] gravidadePorArena;
@@ -16,8 +23,6 @@ public class ArenaManager : MonoBehaviour
     public int arenaComFog = 1;
     public GameObject[] tetos;
     public GameObject painelVitoria;
-    public GameObject[] spawnersDeMoedasGO;
-    private CoinSpawner[] spawnersDeMoedas;
 
     private int arenaAtual = 0;
     private int acertos = 0;
@@ -34,6 +39,7 @@ public class ArenaManager : MonoBehaviour
     void Start()
     {
         rbBola = bola.GetComponent<Rigidbody2D>();
+
         if (PlayerPrefs.HasKey("arenaAtual"))
             CarregarJogo();
         else
@@ -66,24 +72,20 @@ public class ArenaManager : MonoBehaviour
 
     void AtualizarArenas()
     {
-        for (int i = 0; i < spawnersDeMoedas.Length; i++)
+        for (int i = 0; i < arenas.Length; i++)
         {
-            if (spawnersDeMoedas[i] != null)
+            bool ativo = (i == arenaAtual);
+            arenas[i].SetActive(ativo);
+
+            if (i < spawnersDeMoedas.Length && spawnersDeMoedas[i] != null)
             {
-                bool ativo = (i == arenaAtual);
-                if (!ativo)
-                    spawnersDeMoedas[i].AtivarSpawner(false);
-
+                // Primeiro ativa o GameObject, depois inicia o spawner
                 spawnersDeMoedas[i].gameObject.SetActive(ativo);
-
-                if (ativo)
-                    spawnersDeMoedas[i].AtivarSpawner(true);
+                spawnersDeMoedas[i].AtivarSpawner(ativo);
             }
         }
 
-        for (int i = 0; i < arenas.Length; i++)
-            arenas[i].SetActive(i == arenaAtual);
-
+        // Atualiza câmera e cor
         if (arenaAtual < posicoesCamera.Length)
             mainCamera.transform.position = posicoesCamera[arenaAtual];
 
@@ -93,6 +95,7 @@ public class ArenaManager : MonoBehaviour
         if (fogPanel != null)
             fogPanel.SetActive(arenaAtual == arenaComFog);
 
+        // Gravidade
         if (arenaAtual < gravidadePorArena.Length)
             rbBola.gravityScale = gravidadePorArena[arenaAtual];
         else
@@ -124,16 +127,10 @@ public class ArenaManager : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
-    public Transform GetArenaAtualTransform() => arenas[arenaAtual].transform;
-    public int GetArenaAtualIndex() => arenaAtual;
-
     public void SalvarJogo()
     {
         PlayerPrefs.SetInt("arenaAtual", arenaAtual);
         PlayerPrefs.SetInt("acertos", acertos);
-        PlayerPrefs.SetFloat("bolaX", bola.position.x);
-        PlayerPrefs.SetFloat("bolaY", bola.position.y);
-        PlayerPrefs.SetFloat("bolaZ", bola.position.z);
         PlayerPrefs.Save();
     }
 
@@ -141,10 +138,6 @@ public class ArenaManager : MonoBehaviour
     {
         arenaAtual = PlayerPrefs.GetInt("arenaAtual", 0);
         acertos = PlayerPrefs.GetInt("acertos", 0);
-        float x = PlayerPrefs.GetFloat("bolaX", 0f);
-        float y = PlayerPrefs.GetFloat("bolaY", 0f);
-        float z = PlayerPrefs.GetFloat("bolaZ", 0f);
-        bola.position = new Vector3(x, y, z);
 
         foreach (GameObject teto in tetos)
             if (teto != null) teto.SetActive(false);
@@ -153,12 +146,19 @@ public class ArenaManager : MonoBehaviour
             if (tetos[i] != null) tetos[i].SetActive(true);
 
         AtualizarArenas();
+    }
 
-        if (PlayerPrefs.HasKey("tempoRestante"))
-        {
-            Timer timer = FindFirstObjectByType<Timer>();
-            if (timer != null)
-                timer.SetTempoRestante(PlayerPrefs.GetFloat("tempoRestante"));
-        }
+    // MÉTODOS DE SUPORTE para outros scripts
+    public int GetArenaAtualIndex()
+    {
+        return arenaAtual;
+    }
+
+    public Transform GetArenaAtualTransform()
+    {
+        if (arenaAtual >= 0 && arenaAtual < arenas.Length)
+            return arenas[arenaAtual].transform;
+        else
+            return null;
     }
 }
