@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections;
 
 public class MenuController : MonoBehaviour
 {
@@ -9,7 +10,11 @@ public class MenuController : MonoBehaviour
 
     [Header("UI Painéis")]
     public GameObject painelCreditos;
-    public GameObject painelLoja; 
+    public GameObject painelLoja;
+
+    [Header("Transição de Fade")]
+    public Image fadeImage;
+    public float fadeDuration = 1f;
 
     void Start()
     {
@@ -20,13 +25,21 @@ public class MenuController : MonoBehaviour
             painelCreditos.SetActive(false);
 
         if (painelLoja != null)
-            painelLoja.SetActive(false); 
+            painelLoja.SetActive(false);
+
+        if (fadeImage != null)
+        {
+            Color c = fadeImage.color;
+            c.a = 0f;
+            fadeImage.color = c;
+            fadeImage.gameObject.SetActive(false);
+        }
     }
 
     public void Jogar()
     {
         PlayerPrefs.DeleteAll();
-        SceneManager.LoadScene("Jogo");
+        StartCoroutine(FadeOutAndLoad("Jogo"));
     }
 
     public void Continuar()
@@ -46,7 +59,6 @@ public class MenuController : MonoBehaviour
             painelCreditos.SetActive(false);
     }
 
-   
     public void AbrirLoja()
     {
         if (painelLoja != null)
@@ -57,5 +69,30 @@ public class MenuController : MonoBehaviour
     {
         if (painelLoja != null)
             painelLoja.SetActive(false);
+    }
+
+    private IEnumerator FadeOutAndLoad(string cena)
+    {
+        if (fadeImage == null)
+        {
+            SceneManager.LoadScene(cena);
+            yield break;
+        }
+
+        fadeImage.gameObject.SetActive(true);
+        Color c = fadeImage.color;
+        c.a = 0f;
+        fadeImage.color = c;
+
+        float t = 0f;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            c.a = Mathf.Lerp(0f, 1f, t / fadeDuration);
+            fadeImage.color = c;
+            yield return null;
+        }
+
+        SceneManager.LoadScene(cena);
     }
 }

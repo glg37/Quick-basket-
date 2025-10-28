@@ -58,27 +58,40 @@ public class CoinSpawner : MonoBehaviour
 
     private void SpawnMoeda()
     {
-        // A moeda nasce na posição do empty (o próprio spawner)
+        // Define altura aleatória
         float alturaAleatoria = Random.Range(alturaMin, alturaMax);
-        Vector3 spawnPos = transform.position + new Vector3(0, alturaAleatoria, 0);
 
-        moedaAtual = Instantiate(moedaPrefab, spawnPos, Quaternion.identity);
-        StartCoroutine(MovimentoMoeda(moedaAtual));
-    }
-
-    private IEnumerator MovimentoMoeda(GameObject moeda)
-    {
         Camera cam = Camera.main;
         float zMoeda = 0f;
-        float xMin = cam.ViewportToWorldPoint(new Vector3(0, 0, zMoeda - cam.transform.position.z)).x - 1f;
-        float xMax = cam.ViewportToWorldPoint(new Vector3(1, 0, zMoeda - cam.transform.position.z)).x + 1f;
 
+        // Calcula bordas da tela em coordenadas do mundo
+        float xMin = cam.ViewportToWorldPoint(new Vector3(0, 0, zMoeda - cam.transform.position.z)).x - 2f;
+        float xMax = cam.ViewportToWorldPoint(new Vector3(1, 0, zMoeda - cam.transform.position.z)).x + 2f;
+
+        // Escolhe direção aleatória (esquerda -> direita ou direita -> esquerda)
         bool indoDireita = Random.value > 0.5f;
-        Vector3 startPos = moeda.transform.position;
-        Vector3 endPos = new Vector3(indoDireita ? xMax : xMin, startPos.y, startPos.z);
 
-        float t = 0f;
+        // Define posição inicial fora da tela
+        Vector3 spawnPos = new Vector3(
+            indoDireita ? xMin : xMax,
+            transform.position.y + alturaAleatoria,
+            0f
+        );
+
+        // Cria moeda
+        moedaAtual = Instantiate(moedaPrefab, spawnPos, Quaternion.identity);
+
+        // Move ela totalmente de fora a fora
+        StartCoroutine(MovimentoMoeda(moedaAtual, indoDireita ? xMax : xMin));
+    }
+
+    private IEnumerator MovimentoMoeda(GameObject moeda, float destinoX)
+    {
+        Vector3 startPos = moeda.transform.position;
+        Vector3 endPos = new Vector3(destinoX, startPos.y, startPos.z);
+
         float distancia = Vector3.Distance(startPos, endPos);
+        float t = 0f;
 
         while (moeda != null && t < 1f)
         {
