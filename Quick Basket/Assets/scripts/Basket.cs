@@ -9,31 +9,32 @@ public class Basket : MonoBehaviour
     public int arenaNeon = 1;
 
     [Header("Áudio")]
-    public AudioClip somConfete; // Som da cesta
+    public AudioClip somConfete;        // Som da cesta
     [Range(0f, 1f)] public float volumeSom = 0.1f; // Volume do som
+
+    [Header("Tempo extra")]
+    public float tempoExtra = 5f;
 
     private bool jaExplodiu = false;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Ball") && !jaExplodiu)
+        if (!jaExplodiu && collision.CompareTag("Ball"))
         {
             jaExplodiu = true;
 
-            // Instancia confete
+            // ---------- Confete ----------
             if (confetePrefab != null)
             {
                 GameObject confete = Instantiate(confetePrefab, transform.position, Quaternion.identity);
 
-                // Define material do confete
-                ArenaManager arenaManager = FindFirstObjectByType<ArenaManager>();
-                if (arenaManager != null)
+                ParticleSystemRenderer pr = confete.GetComponent<ParticleSystemRenderer>();
+                if (pr != null)
                 {
-                    int arenaIndex = arenaManager.GetArenaAtualIndex();
-
-                    ParticleSystemRenderer pr = confete.GetComponent<ParticleSystemRenderer>();
-                    if (pr != null)
+                    ArenaManager arenaManager = FindFirstObjectByType<ArenaManager>();
+                    if (arenaManager != null)
                     {
+                        int arenaIndex = arenaManager.GetArenaAtualIndex();
                         if (arenaIndex == arenaNeon && neonMaterial != null)
                             pr.material = neonMaterial;
                         else if (normalMaterial != null)
@@ -41,7 +42,6 @@ public class Basket : MonoBehaviour
                     }
                 }
 
-                // Destroi confete depois da duração do sistema de partículas
                 ParticleSystem ps = confete.GetComponent<ParticleSystem>();
                 if (ps != null)
                     Destroy(confete, ps.main.duration + ps.main.startLifetime.constantMax);
@@ -49,29 +49,28 @@ public class Basket : MonoBehaviour
                     Destroy(confete, 2f);
             }
 
-            // Toca o som usando objeto temporário
+            // ---------- Som ----------
             if (somConfete != null)
             {
-                GameObject tempAudio = new GameObject("TempAudio");
-                tempAudio.transform.position = transform.position;
-                AudioSource aSource = tempAudio.AddComponent<AudioSource>();
-                aSource.clip = somConfete;
-                aSource.volume = volumeSom;
-                aSource.Play();
-                Destroy(tempAudio, somConfete.length + 0.1f);
+                // PlayClipAtPoint é mais limpo e respeita volume
+                AudioSource.PlayClipAtPoint(somConfete, transform.position, volumeSom);
             }
 
-            // Adiciona tempo extra
+            // ---------- Tempo extra ----------
             Timer timer = FindFirstObjectByType<Timer>();
             if (timer != null)
-            {
-                timer.AdicionarTempo(5f);
-            }
+                timer.AdicionarTempo(tempoExtra);
 
-            // Notifica ArenaManager e BasketSpawner
-            FindFirstObjectByType<ArenaManager>().AcertouCesta();
-            FindFirstObjectByType<BasketSpawner>().SpawnNovaCesta();
+            // ---------- Notificações ----------
+            ArenaManager am = FindFirstObjectByType<ArenaManager>();
+            if (am != null)
+                am.AcertouCesta();
 
+            BasketSpawner bs = FindFirstObjectByType<BasketSpawner>();
+            if (bs != null)
+                bs.SpawnNovaCesta();
+
+            // ---------- Destrói a cesta ----------
             Destroy(gameObject);
         }
     }

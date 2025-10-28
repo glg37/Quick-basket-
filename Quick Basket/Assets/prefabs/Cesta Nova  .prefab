@@ -340,8 +340,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   confetePrefab: {fileID: 0}
+  neonMaterial: {fileID: 0}
+  normalMaterial: {fileID: 0}
+  arenaNeon: 1
   somConfete: {fileID: 8300000, guid: 46870c748a236dd42afd65f675c7009b, type: 3}
-  volumeSom: 0.064
+  volumeSom: 0.037
 --- !u!251 &6421165564428155592
 PlatformEffector2D:
   m_ObjectHideFlags: 0
