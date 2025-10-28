@@ -9,8 +9,8 @@ public class Basket : MonoBehaviour
     public int arenaNeon = 1;
 
     [Header("Áudio")]
-    public AudioClip somConfete;        // Som da cesta
-    [Range(0f, 1f)] public float volumeSom = 0.1f; // Volume do som
+    public AudioClip somConfete;        
+    [Range(0f, 1f)] public float volumeSom = 0.1f; 
 
     [Header("Tempo extra")]
     public float tempoExtra = 5f;
@@ -23,7 +23,7 @@ public class Basket : MonoBehaviour
         {
             jaExplodiu = true;
 
-            // ---------- Confete ----------
+            
             if (confetePrefab != null)
             {
                 GameObject confete = Instantiate(confetePrefab, transform.position, Quaternion.identity);
@@ -49,19 +49,19 @@ public class Basket : MonoBehaviour
                     Destroy(confete, 2f);
             }
 
-            // ---------- Som ----------
+            
             if (somConfete != null)
             {
-                // PlayClipAtPoint é mais limpo e respeita volume
+               
                 AudioSource.PlayClipAtPoint(somConfete, transform.position, volumeSom);
             }
 
-            // ---------- Tempo extra ----------
+            
             Timer timer = FindFirstObjectByType<Timer>();
             if (timer != null)
                 timer.AdicionarTempo(tempoExtra);
 
-            // ---------- Notificações ----------
+            
             ArenaManager am = FindFirstObjectByType<ArenaManager>();
             if (am != null)
                 am.AcertouCesta();
@@ -70,7 +70,7 @@ public class Basket : MonoBehaviour
             if (bs != null)
                 bs.SpawnNovaCesta();
 
-            // ---------- Destrói a cesta ----------
+            
             Destroy(gameObject);
         }
     }

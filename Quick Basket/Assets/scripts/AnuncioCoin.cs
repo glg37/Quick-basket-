@@ -27,7 +27,7 @@ public class AnuncioCoin : MonoBehaviour
 
     void Start()
     {
-        // Checa se painel e imagem foram atribuídos
+       
         if (painelAnuncio == null)
         {
             Debug.LogError("Campo 'Painel Anuncio' não está atribuído!");
@@ -48,7 +48,7 @@ public class AnuncioCoin : MonoBehaviour
 
         painelAnuncio.SetActive(false);
 
-        // Se não tiver contador, cria automaticamente
+       
         if (contadorTexto == null)
         {
             GameObject contadorGO = new GameObject("ContadorTexto", typeof(RectTransform));
@@ -67,29 +67,29 @@ public class AnuncioCoin : MonoBehaviour
 
         contadorTexto.text = "";
 
-        // Tenta encontrar ou criar botão X
+     
         botaoFechar = painelAnuncio.GetComponentInChildren<Button>();
 
         if (botaoFechar == null)
         {
-            // Cria o botão X se não existir
+           
             GameObject botaoGO = new GameObject("BotaoX", typeof(RectTransform));
             botaoGO.transform.SetParent(painelAnuncio.transform, false);
             botaoFechar = botaoGO.AddComponent<Button>();
 
-            // Adiciona imagem
+           
             Image img = botaoGO.AddComponent<Image>();
-            img.color = new Color(1, 0.3f, 0.3f); // vermelho claro
+            img.color = new Color(1, 0.3f, 0.3f); 
 
-            // Posiciona no canto superior direito (menor e mais para cima/esquerda)
+            
             RectTransform rt = botaoGO.GetComponent<RectTransform>();
             rt.anchorMin = new Vector2(1, 1);
             rt.anchorMax = new Vector2(1, 1);
             rt.pivot = new Vector2(1, 1);
-            rt.anchoredPosition = new Vector2(-25, -25); // mais próximo do canto
-            rt.sizeDelta = new Vector2(45, 45);           // menor
+            rt.anchoredPosition = new Vector2(-25, -25); 
+            rt.sizeDelta = new Vector2(45, 45);           
 
-            // Adiciona texto "X"
+          
             GameObject txtGO = new GameObject("TextoX", typeof(RectTransform));
             txtGO.transform.SetParent(botaoGO.transform, false);
             textoFechar = txtGO.AddComponent<TextMeshProUGUI>();
@@ -106,7 +106,7 @@ public class AnuncioCoin : MonoBehaviour
         }
         else
         {
-            // Se o botão já existia, tenta achar o texto dentro dele
+           
             textoFechar = botaoFechar.GetComponentInChildren<TextMeshProUGUI>();
 
             if (textoFechar == null)
@@ -120,11 +120,11 @@ public class AnuncioCoin : MonoBehaviour
             }
         }
 
-        // Configurações iniciais
+   
         botaoFechar.interactable = false;
         textoFechar.color = corTextoBloqueado;
 
-        // Liga os botões
+      
         botaoAnuncio.onClick.AddListener(AssistirAnuncio);
         botaoFechar.onClick.AddListener(FecharAnuncio);
     }
@@ -164,7 +164,7 @@ public class AnuncioCoin : MonoBehaviour
     {
         if (!emAnuncio || !botaoFechar.interactable) return;
 
-        // Dá moedas
+        
         PlayerPrefs.SetInt("Moedas", PlayerPrefs.GetInt("Moedas", 0) + moedasPorAnuncio);
         PlayerPrefs.Save();
 

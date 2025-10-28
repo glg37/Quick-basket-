@@ -2333,7 +2333,6 @@ MonoBehaviour:
   fatorAltura: 2.13
   somLancamento: {fileID: 8300000, guid: 53906c40476616c4d86595c40b0052fc, type: 3}
   volumeSom: 0.085
-  arenaInvertida: 5
 --- !u!58 &580523108
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -4792,9 +4791,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08a5c6c01d21ba548af882952fe8e182, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tempoLimite: 50
+  tempoLimite: 60
   bonusPorCesta: 5
-  velocidadeTempo: 1.5
+  velocidadeTempo: 1.3
   timerTexto: {fileID: 1880736153}
   gameOverPanel: {fileID: 1726124632}
   restartButton: {fileID: 1464747076}
@@ -4844,16 +4843,8 @@ MonoBehaviour:
   - {r: 0.4867924, g: 0.4775731, b: 0.24155922, a: 0}
   - {r: 0.5754717, g: 0.23073158, b: 0.44821838, a: 0}
   - {r: 0.1980242, g: 0.4716981, b: 0.43194166, a: 0}
+  controlesInvertidos: 00000000000100
   bola: {fileID: 580523111}
-  gravidadePorArena:
-  - 3
-  - 3
-  - 3
-  - 3
-  - 3
-  - 0
-  - 3
-  gravidadePadrao: 1
   fogPanel: {fileID: 240482654}
   arenaComFog: 3
   tetos:

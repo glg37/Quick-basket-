@@ -9,27 +9,24 @@ public class Ball : MonoBehaviour
     public float fatorAltura = 2f;
 
     [Header("Áudio")]
-    public AudioClip somLancamento; // Som da bola
-    [Range(0f, 1f)] public float volumeSom = 0.3f; // Volume ajustável
+    public AudioClip somLancamento;
+    [Range(0f, 1f)] public float volumeSom = 0.3f;
     private AudioSource audioSource;
 
     private Rigidbody2D rb;
     private Transform cestaAtual;
     private ArenaManager arenaManager;
 
-    [Header("Arena com lançamento invertido")]
-    public int arenaInvertida = 1;
-
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         arenaManager = FindFirstObjectByType<ArenaManager>();
 
-        // Configura AudioSource
+        
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
         audioSource.clip = somLancamento;
-        audioSource.volume = volumeSom; // Define o volume
+        audioSource.volume = volumeSom;
     }
 
     void Update()
@@ -40,20 +37,19 @@ public class Ball : MonoBehaviour
             LancaBola(mousePos);
 
             if (somLancamento != null)
-                audioSource.Play(); // Toca som toda vez que clicar
+                audioSource.Play();
         }
     }
 
     void LancaBola(Vector2 alvo)
     {
-        rb.linearVelocity = Vector2.zero; // Resetando velocidade antes de lançar
+        rb.linearVelocity = Vector2.zero;
 
         Vector2 posAtual = transform.position;
         Vector2 deslocamento = alvo - posAtual;
 
         float g = Mathf.Abs(Physics2D.gravity.y);
         float alturaExtra = fatorAltura;
-
         float alturaTotal = deslocamento.y + alturaExtra;
         if (alturaTotal < 0.1f) alturaTotal = 0.1f;
 
@@ -65,11 +61,13 @@ public class Ball : MonoBehaviour
             Mathf.Sqrt(2 * g * alturaExtra)
         );
 
-        if (arenaManager != null && arenaManager.GetArenaAtualIndex() == arenaInvertida)
-            velocidade.y = -velocidade.y;
+      
+        if (arenaManager != null && arenaManager.ControlesInvertidos())
+            velocidade.x = -velocidade.x;
 
         rb.AddForce(velocidade * forcaLancamento, ForceMode2D.Impulse);
 
+       
         if (cestaAtual != null)
         {
             Collider2D ballCollider = GetComponent<Collider2D>();

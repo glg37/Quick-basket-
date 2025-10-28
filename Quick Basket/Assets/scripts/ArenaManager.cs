@@ -14,11 +14,12 @@ public class ArenaManager : MonoBehaviour
     public Vector3[] posicoesCamera;
     public Color[] coresArenas;
 
+    [Header("Movimentação")]
+    public bool[] controlesInvertidos; 
+
     [Header("Outros")]
     public Transform bola;
     private Rigidbody2D rbBola;
-    public float[] gravidadePorArena;
-    public float gravidadePadrao = 1f;
     public GameObject fogPanel;
     public int arenaComFog = 1;
     public GameObject[] tetos;
@@ -39,6 +40,9 @@ public class ArenaManager : MonoBehaviour
     void Start()
     {
         rbBola = bola.GetComponent<Rigidbody2D>();
+
+       
+        rbBola.gravityScale = 3f; 
 
         if (PlayerPrefs.HasKey("arenaAtual"))
             CarregarJogo();
@@ -79,13 +83,12 @@ public class ArenaManager : MonoBehaviour
 
             if (i < spawnersDeMoedas.Length && spawnersDeMoedas[i] != null)
             {
-                // Primeiro ativa o GameObject, depois inicia o spawner
                 spawnersDeMoedas[i].gameObject.SetActive(ativo);
                 spawnersDeMoedas[i].AtivarSpawner(ativo);
             }
         }
 
-        // Atualiza câmera e cor
+        
         if (arenaAtual < posicoesCamera.Length)
             mainCamera.transform.position = posicoesCamera[arenaAtual];
 
@@ -94,12 +97,6 @@ public class ArenaManager : MonoBehaviour
 
         if (fogPanel != null)
             fogPanel.SetActive(arenaAtual == arenaComFog);
-
-        // Gravidade
-        if (arenaAtual < gravidadePorArena.Length)
-            rbBola.gravityScale = gravidadePorArena[arenaAtual];
-        else
-            rbBola.gravityScale = gravidadePadrao;
     }
 
     public void AcertouCesta()
@@ -148,7 +145,7 @@ public class ArenaManager : MonoBehaviour
         AtualizarArenas();
     }
 
-    // MÉTODOS DE SUPORTE para outros scripts
+   
     public int GetArenaAtualIndex()
     {
         return arenaAtual;
@@ -160,5 +157,13 @@ public class ArenaManager : MonoBehaviour
             return arenas[arenaAtual].transform;
         else
             return null;
+    }
+
+   
+    public bool ControlesInvertidos()
+    {
+        if (arenaAtual >= 0 && arenaAtual < controlesInvertidos.Length)
+            return controlesInvertidos[arenaAtual];
+        return false;
     }
 }

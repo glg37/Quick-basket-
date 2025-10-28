@@ -58,30 +58,30 @@ public class CoinSpawner : MonoBehaviour
 
     private void SpawnMoeda()
     {
-        // Define altura aleatória
+       
         float alturaAleatoria = Random.Range(alturaMin, alturaMax);
 
         Camera cam = Camera.main;
         float zMoeda = 0f;
 
-        // Calcula bordas da tela em coordenadas do mundo
+
         float xMin = cam.ViewportToWorldPoint(new Vector3(0, 0, zMoeda - cam.transform.position.z)).x - 2f;
         float xMax = cam.ViewportToWorldPoint(new Vector3(1, 0, zMoeda - cam.transform.position.z)).x + 2f;
 
-        // Escolhe direção aleatória (esquerda -> direita ou direita -> esquerda)
+
         bool indoDireita = Random.value > 0.5f;
 
-        // Define posição inicial fora da tela
+    
         Vector3 spawnPos = new Vector3(
             indoDireita ? xMin : xMax,
             transform.position.y + alturaAleatoria,
             0f
         );
 
-        // Cria moeda
+      
         moedaAtual = Instantiate(moedaPrefab, spawnPos, Quaternion.identity);
 
-        // Move ela totalmente de fora a fora
+    
         StartCoroutine(MovimentoMoeda(moedaAtual, indoDireita ? xMax : xMin));
     }
 

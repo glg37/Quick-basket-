@@ -4,8 +4,8 @@ using System.Collections;
 public class BasketSpawnerMenu : MonoBehaviour
 {
     [Header("Configurações da Cesta")]
-    public GameObject cestaPrefab;     
-    public Transform ball;            
+    public GameObject cestaPrefab;
+    public Transform ball;
 
     [Header("Limites de Posição")]
     public float alturaMinimaRelativa = 0.5f;
@@ -38,21 +38,13 @@ public class BasketSpawnerMenu : MonoBehaviour
 
         float yPos = Random.Range(alturaMinimaRelativa, alturaMaximaRelativa);
 
-        
+        // Evita spawn muito próximo da bola
         float minDistanciaY = 1f;
         if (Mathf.Abs(yPos - ball.position.y) < minDistanciaY)
             yPos = ball.position.y + minDistanciaY;
 
-      
         cestaAtual = Instantiate(cestaPrefab, new Vector2(xPos, yPos), Quaternion.identity);
         cestaAtual.tag = "Basket";
-
-        
-        BallMenu ballScript = ball.GetComponent<BallMenu>();
-        if (ballScript != null)
-        {
-            ballScript.SetCestaAlvo(cestaAtual.transform);
-        }
 
         Debug.Log("Nova cesta spawnada em: " + cestaAtual.transform.position);
     }

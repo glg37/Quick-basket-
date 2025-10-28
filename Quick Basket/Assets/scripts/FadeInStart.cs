@@ -5,8 +5,8 @@ using System.Collections;
 public class FadeInStart : MonoBehaviour
 {
     [Header("Fade de Início")]
-    public Image fadeImage; // imagem preta na tela
-    public float fadeDuration = 1f; // tempo da animação
+    public Image fadeImage; 
+    public float fadeDuration = 1f; 
 
     void Start()
     {
