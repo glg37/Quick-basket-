@@ -110,11 +110,20 @@ public class ArenaManager : MonoBehaviour
     {
         arenaAtual = 0;
         acertos = 0;
+
+        // Zera os tetos
         foreach (GameObject teto in tetos)
             if (teto != null) teto.SetActive(false);
 
+        // Zera as moedas do jogador
+        if (CoinManager.instance != null)
+        {
+            CoinManager.instance.ZerarMoedas();
+        }
+
         AtualizarArenas();
         SalvarJogo();
+
         if (painelVitoria != null)
             painelVitoria.SetActive(false);
     }
@@ -143,9 +152,27 @@ public class ArenaManager : MonoBehaviour
             if (tetos[i] != null) tetos[i].SetActive(true);
 
         AtualizarArenas();
+
+        //  Move a bola para a posição da arena carregada
+        if (arenaAtual >= 0 && arenaAtual < arenas.Length && bola != null)
+        {
+            Transform arenaAtualTransform = arenas[arenaAtual].transform;
+            // Ajusta a posição da bola para o centro da arena
+            Vector3 novaPosicao = arenaAtualTransform.position;
+            novaPosicao.y += 2f; // sobe um pouquinho acima da cesta (ajuste fino)
+            bola.position = novaPosicao;
+
+            // Reseta a velocidade para evitar queda brusca
+            Rigidbody2D rb = bola.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector2.zero;
+                rb.angularVelocity = 0f;
+            }
+        }
     }
 
-   
+
     public int GetArenaAtualIndex()
     {
         return arenaAtual;

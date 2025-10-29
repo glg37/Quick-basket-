@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CoinManager : MonoBehaviour
 {
@@ -17,7 +18,8 @@ public class CoinManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); // Mantém entre cenas
+            DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded; //  Detecta mudança de cena
         }
         else
         {
@@ -28,19 +30,29 @@ public class CoinManager : MonoBehaviour
 
     void Start()
     {
-        //  Carrega o total salvo
         moedasTotais = PlayerPrefs.GetInt("MoedasTotais", 0);
         AtualizarUI();
+    }
+
+    private void OnSceneLoaded(Scene cena, LoadSceneMode modo)
+    {
+        //  Tenta encontrar o texto da moeda novamente na nova cena
+        if (textoMoedas == null)
+        {
+            TMP_Text novoTexto = GameObject.FindWithTag("TextoMoeda")?.GetComponent<TMP_Text>();
+            if (novoTexto != null)
+            {
+                textoMoedas = novoTexto;
+                AtualizarUI();
+            }
+        }
     }
 
     public void AdicionarMoeda(int quantidade)
     {
         moedasTotais += quantidade;
-
-        //  Salva o novo total
         PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
         PlayerPrefs.Save();
-
         AtualizarUI();
     }
 
@@ -59,5 +71,12 @@ public class CoinManager : MonoBehaviour
     public int GetMoedasTotais()
     {
         return moedasTotais;
+    }
+    public void ZerarMoedas()
+    {
+        moedasTotais = 0;
+        PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
+        PlayerPrefs.Save();
+        AtualizarUI();
     }
 }

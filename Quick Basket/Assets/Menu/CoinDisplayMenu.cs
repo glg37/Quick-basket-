@@ -5,25 +5,34 @@ using UnityEngine.UI;
 public class CoinDisplayMenu : MonoBehaviour
 {
     [Header("Referências da UI")]
-    public TMP_Text textoMoedasMenu;   // Mostra a quantidade de moedas
-    public Image iconeMoeda;            // Ícone da moeda
+    public TMP_Text textoMoedasMenu;   // Texto da moeda no HUD
+    public Image iconeMoeda;           // Ícone da moeda
 
     [Header("Configuração")]
-    public bool atualizarEmTempoReal = true; // Atualiza sempre (para menus dinâmicos)
+    public bool atualizarEmTempoReal = true; // Atualiza automaticamente se as moedas mudarem
 
-    private int moedasAtuais;
+    private int moedasAtuais = -1;
+
+    void OnEnable()
+    {
+        // Sempre atualiza a UI ao ativar a cena ou voltar do menu
+        AtualizarUI();
+    }
 
     void Start()
     {
+        // Inicializa a UI
         AtualizarUI();
     }
 
     void Update()
     {
-        // Atualiza automaticamente se as moedas mudarem
         if (atualizarEmTempoReal)
         {
-            int moedasSalvas = PlayerPrefs.GetInt("MoedasTotais", 0);
+            int moedasSalvas = CoinManager.instance != null ?
+                               CoinManager.instance.GetMoedasTotais() :
+                               PlayerPrefs.GetInt("MoedasTotais", 0);
+
             if (moedasSalvas != moedasAtuais)
             {
                 moedasAtuais = moedasSalvas;
@@ -32,14 +41,20 @@ public class CoinDisplayMenu : MonoBehaviour
         }
     }
 
-    void AtualizarUI()
+    public void AtualizarUI()
     {
-        moedasAtuais = PlayerPrefs.GetInt("MoedasTotais", 0);
+        // Pega o total de moedas do CoinManager, se existir, senão pega do PlayerPrefs
+        if (CoinManager.instance != null)
+            moedasAtuais = CoinManager.instance.GetMoedasTotais();
+        else
+            moedasAtuais = PlayerPrefs.GetInt("MoedasTotais", 0);
 
+        // Atualiza o texto da moeda
         if (textoMoedasMenu != null)
             textoMoedasMenu.text = moedasAtuais.ToString();
 
+        // Garante que o ícone da moeda esteja visível
         if (iconeMoeda != null)
-            iconeMoeda.enabled = true; // Garante que o ícone aparece
+            iconeMoeda.enabled = true;
     }
 }

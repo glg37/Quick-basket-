@@ -6,15 +6,15 @@ using System.Collections;
 public class AnuncioCoin : MonoBehaviour
 {
     [Header("Referências UI")]
-    public GameObject painelAnuncio;   // Painel que contém a propaganda
-    public Image imagemAnuncio;        // Imagem da propaganda
-    public Button botaoAnuncio;        // Botão "Assistir Anúncio"
-    public TMP_Text contadorTexto;     // Texto da contagem regressiva
-    public int moedasPorAnuncio = 10;  // Moedas que o jogador recebe
+    public GameObject painelAnuncio;  
+    public Image imagemAnuncio;       
+    public Button botaoAnuncio;        
+    public TMP_Text contadorTexto;     
+    public int moedasPorAnuncio = 10;  
 
     [Header("Configurações")]
-    public float duracaoAnuncio = 5f;  // Duração do anúncio
-    public int maxUsos = 2;            // Máximo de vezes que pode usar
+    public float duracaoAnuncio = 5f; 
+    public int maxUsos = 2;            
 
     [Header("Cores do botão X")]
     public Color corTextoBloqueado = Color.gray;

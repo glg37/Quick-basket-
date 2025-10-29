@@ -9,6 +9,7 @@ TagManager:
   - Basket
   - Coin
   - Ground
+  - TextoMoeda
   layers:
   - Default
   - TransparentFX
