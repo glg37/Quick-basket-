@@ -27,7 +27,6 @@ public class AnuncioCoin : MonoBehaviour
 
     void Start()
     {
-       
         if (painelAnuncio == null)
         {
             Debug.LogError("Campo 'Painel Anuncio' não está atribuído!");
@@ -42,13 +41,12 @@ public class AnuncioCoin : MonoBehaviour
 
         if (botaoAnuncio == null)
         {
-            Debug.LogError("? Campo 'Botao Anuncio' não está atribuído!");
+            Debug.LogError("Campo 'Botao Anuncio' não está atribuído!");
             return;
         }
 
         painelAnuncio.SetActive(false);
 
-       
         if (contadorTexto == null)
         {
             GameObject contadorGO = new GameObject("ContadorTexto", typeof(RectTransform));
@@ -67,29 +65,24 @@ public class AnuncioCoin : MonoBehaviour
 
         contadorTexto.text = "";
 
-     
         botaoFechar = painelAnuncio.GetComponentInChildren<Button>();
 
         if (botaoFechar == null)
         {
-           
             GameObject botaoGO = new GameObject("BotaoX", typeof(RectTransform));
             botaoGO.transform.SetParent(painelAnuncio.transform, false);
             botaoFechar = botaoGO.AddComponent<Button>();
 
-           
             Image img = botaoGO.AddComponent<Image>();
-            img.color = new Color(1, 0.3f, 0.3f); 
+            img.color = new Color(1, 0.3f, 0.3f);
 
-            
             RectTransform rt = botaoGO.GetComponent<RectTransform>();
             rt.anchorMin = new Vector2(1, 1);
             rt.anchorMax = new Vector2(1, 1);
             rt.pivot = new Vector2(1, 1);
-            rt.anchoredPosition = new Vector2(-25, -25); 
-            rt.sizeDelta = new Vector2(45, 45);           
+            rt.anchoredPosition = new Vector2(-25, -25);
+            rt.sizeDelta = new Vector2(45, 45);
 
-          
             GameObject txtGO = new GameObject("TextoX", typeof(RectTransform));
             txtGO.transform.SetParent(botaoGO.transform, false);
             textoFechar = txtGO.AddComponent<TextMeshProUGUI>();
@@ -106,7 +99,6 @@ public class AnuncioCoin : MonoBehaviour
         }
         else
         {
-           
             textoFechar = botaoFechar.GetComponentInChildren<TextMeshProUGUI>();
 
             if (textoFechar == null)
@@ -120,11 +112,9 @@ public class AnuncioCoin : MonoBehaviour
             }
         }
 
-   
         botaoFechar.interactable = false;
         textoFechar.color = corTextoBloqueado;
 
-      
         botaoAnuncio.onClick.AddListener(AssistirAnuncio);
         botaoFechar.onClick.AddListener(FecharAnuncio);
     }
@@ -164,9 +154,19 @@ public class AnuncioCoin : MonoBehaviour
     {
         if (!emAnuncio || !botaoFechar.interactable) return;
 
-        
-        PlayerPrefs.SetInt("Moedas", PlayerPrefs.GetInt("Moedas", 0) + moedasPorAnuncio);
-        PlayerPrefs.Save();
+        //  Atualiza moedas via CoinManager (se existir)
+        if (CoinManager.instance != null)
+        {
+            CoinManager.instance.AdicionarMoeda(moedasPorAnuncio);
+        }
+        else
+        {
+            //  Atualiza via PlayerPrefs (backup)
+            int moedasAtuais = PlayerPrefs.GetInt("MoedasTotais", 0);
+            moedasAtuais += moedasPorAnuncio;
+            PlayerPrefs.SetInt("MoedasTotais", moedasAtuais);
+            PlayerPrefs.Save();
+        }
 
         painelAnuncio.SetActive(false);
         contadorTexto.text = "";

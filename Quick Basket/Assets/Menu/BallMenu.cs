@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 public class BallMenu : MonoBehaviour
@@ -31,6 +32,10 @@ public class BallMenu : MonoBehaviour
 
     void Update()
     {
+        // 👉 Verifica se o clique foi em um botão/interface
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return; // Ignora o clique — não lança a bola
+
         if (Input.GetMouseButtonDown(0))
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -61,8 +66,7 @@ public class BallMenu : MonoBehaviour
             Mathf.Sqrt(2 * g * alturaExtra)
         );
 
-        // Limita a velocidade máxima para não sair disparada
-        float velocidadeMax = 8f; // ajuste entre 5 e 10 até ficar perfeito
+        float velocidadeMax = 8f;
         if (velocidade.magnitude > velocidadeMax)
             velocidade = velocidade.normalized * velocidadeMax;
 
@@ -82,7 +86,6 @@ public class BallMenu : MonoBehaviour
             }
         }
     }
-
 
     private IEnumerator ResetCollision(Collider2D a, Collider2D b, float delay)
     {
