@@ -15,7 +15,7 @@ public class ArenaManager : MonoBehaviour
     public Color[] coresArenas;
 
     [Header("Movimentação")]
-    public bool[] controlesInvertidos; 
+    public bool[] controlesInvertidos;
 
     [Header("Outros")]
     public Transform bola;
@@ -32,22 +32,15 @@ public class ArenaManager : MonoBehaviour
     {
         spawnersDeMoedas = new CoinSpawner[spawnersDeMoedasGO.Length];
         for (int i = 0; i < spawnersDeMoedasGO.Length; i++)
-        {
             spawnersDeMoedas[i] = spawnersDeMoedasGO[i].GetComponent<CoinSpawner>();
-        }
     }
 
     void Start()
     {
         rbBola = bola.GetComponent<Rigidbody2D>();
+        rbBola.gravityScale = 3f;
 
-       
-        rbBola.gravityScale = 3f; 
-
-        if (PlayerPrefs.HasKey("arenaAtual"))
-            CarregarJogo();
-        else
-            AtualizarArenas();
+        AtualizarArenas();
 
         if (painelVitoria != null)
             painelVitoria.SetActive(false);
@@ -88,7 +81,6 @@ public class ArenaManager : MonoBehaviour
             }
         }
 
-        
         if (arenaAtual < posicoesCamera.Length)
             mainCamera.transform.position = posicoesCamera[arenaAtual];
 
@@ -111,18 +103,12 @@ public class ArenaManager : MonoBehaviour
         arenaAtual = 0;
         acertos = 0;
 
-        // Zera os tetos
         foreach (GameObject teto in tetos)
             if (teto != null) teto.SetActive(false);
 
-        // Zera as moedas do jogador
-        if (CoinManager.instance != null)
-        {
-            CoinManager.instance.ZerarMoedas();
-        }
+        CoinManager.instance.ZerarMoedasDaPartida();
 
         AtualizarArenas();
-        SalvarJogo();
 
         if (painelVitoria != null)
             painelVitoria.SetActive(false);
@@ -138,55 +124,18 @@ public class ArenaManager : MonoBehaviour
         PlayerPrefs.SetInt("arenaAtual", arenaAtual);
         PlayerPrefs.SetInt("acertos", acertos);
         PlayerPrefs.Save();
+        CoinManager.instance.SalvarPartida();
     }
 
-    public void CarregarJogo()
-    {
-        arenaAtual = PlayerPrefs.GetInt("arenaAtual", 0);
-        acertos = PlayerPrefs.GetInt("acertos", 0);
-
-        foreach (GameObject teto in tetos)
-            if (teto != null) teto.SetActive(false);
-
-        for (int i = 0; i < arenaAtual && i < tetos.Length; i++)
-            if (tetos[i] != null) tetos[i].SetActive(true);
-
-        AtualizarArenas();
-
-        //  Move a bola para a posição da arena carregada
-        if (arenaAtual >= 0 && arenaAtual < arenas.Length && bola != null)
-        {
-            Transform arenaAtualTransform = arenas[arenaAtual].transform;
-            // Ajusta a posição da bola para o centro da arena
-            Vector3 novaPosicao = arenaAtualTransform.position;
-            novaPosicao.y += 2f; // sobe um pouquinho acima da cesta (ajuste fino)
-            bola.position = novaPosicao;
-
-            // Reseta a velocidade para evitar queda brusca
-            Rigidbody2D rb = bola.GetComponent<Rigidbody2D>();
-            if (rb != null)
-            {
-                rb.linearVelocity = Vector2.zero;
-                rb.angularVelocity = 0f;
-            }
-        }
-    }
-
-
-    public int GetArenaAtualIndex()
-    {
-        return arenaAtual;
-    }
+    public int GetArenaAtualIndex() => arenaAtual;
 
     public Transform GetArenaAtualTransform()
     {
         if (arenaAtual >= 0 && arenaAtual < arenas.Length)
             return arenas[arenaAtual].transform;
-        else
-            return null;
+        return null;
     }
 
-   
     public bool ControlesInvertidos()
     {
         if (arenaAtual >= 0 && arenaAtual < controlesInvertidos.Length)

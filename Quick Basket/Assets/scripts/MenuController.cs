@@ -38,38 +38,22 @@ public class MenuController : MonoBehaviour
 
     public void Jogar()
     {
-        PlayerPrefs.DeleteAll();
+        // Flag para zerar moedas da partida ao iniciar cena de jogo
+        PlayerPrefs.SetInt("ZerarPartida", 1);
         StartCoroutine(FadeOutAndLoad("Jogo"));
     }
 
     public void Continuar()
     {
-        SceneManager.LoadScene("Jogo");
+        // Resume jogo com moedas da partida carregadas
+        PlayerPrefs.SetInt("ZerarPartida", 0);
+        StartCoroutine(FadeOutAndLoad("Jogo"));
     }
 
-    public void AbrirCreditos()
-    {
-        if (painelCreditos != null)
-            painelCreditos.SetActive(true);
-    }
-
-    public void FecharCreditos()
-    {
-        if (painelCreditos != null)
-            painelCreditos.SetActive(false);
-    }
-
-    public void AbrirLoja()
-    {
-        if (painelLoja != null)
-            painelLoja.SetActive(true);
-    }
-
-    public void FecharLoja()
-    {
-        if (painelLoja != null)
-            painelLoja.SetActive(false);
-    }
+    public void AbrirCreditos() => painelCreditos?.SetActive(true);
+    public void FecharCreditos() => painelCreditos?.SetActive(false);
+    public void AbrirLoja() => painelLoja?.SetActive(true);
+    public void FecharLoja() => painelLoja?.SetActive(false);
 
     private IEnumerator FadeOutAndLoad(string cena)
     {

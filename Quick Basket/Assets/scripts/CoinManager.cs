@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class CoinManager : MonoBehaviour
@@ -9,9 +8,9 @@ public class CoinManager : MonoBehaviour
 
     [Header("UI da Moeda")]
     public TMP_Text textoMoedas;
-    public Image iconeMoeda;
 
-    private int moedasTotais = 0;
+    private int moedasTotais = 0;   // Moedas acumuladas (menu)
+    private int moedasPartida = 0;  // Moedas da partida atual
 
     void Awake()
     {
@@ -19,7 +18,7 @@ public class CoinManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
-            SceneManager.sceneLoaded += OnSceneLoaded; //  Detecta mudança de cena
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -31,52 +30,115 @@ public class CoinManager : MonoBehaviour
     void Start()
     {
         moedasTotais = PlayerPrefs.GetInt("MoedasTotais", 0);
+        moedasPartida = PlayerPrefs.GetInt("MoedasPartida", 0);
         AtualizarUI();
     }
 
     private void OnSceneLoaded(Scene cena, LoadSceneMode modo)
     {
-        //  Tenta encontrar o texto da moeda novamente na nova cena
-        if (textoMoedas == null)
+        // Atualiza referência do texto de moedas quando a cena muda
+        TMP_Text novoTexto = GameObject.FindWithTag("TextoMoeda")?.GetComponent<TMP_Text>();
+        if (novoTexto != null)
         {
-            TMP_Text novoTexto = GameObject.FindWithTag("TextoMoeda")?.GetComponent<TMP_Text>();
-            if (novoTexto != null)
-            {
-                textoMoedas = novoTexto;
-                AtualizarUI();
-            }
+            textoMoedas = novoTexto;
+            AtualizarUI();
+        }
+
+        // Se entrou na cena de jogo, força HUD mostrar só moedas da partida
+        if (cena.name == "Jogo")
+        {
+            AtualizarUI_Jogo();
+        }
+        else if (cena.name == "Menu")
+        {
+            AtualizarUI_Menu();
         }
     }
 
+    // ------------------------------------------------
+    // MÉTODOS DE ADIÇÃO DE MOEDAS
+    // ------------------------------------------------
+
+    // Moedas coletadas jogando
     public void AdicionarMoeda(int quantidade)
+    {
+        moedasPartida += quantidade;
+        AtualizarUI_Jogo();
+    }
+
+    // Moedas ganhas assistindo anúncio (menu)
+    public void AdicionarMoedaPorAnuncio(int quantidade)
     {
         moedasTotais += quantidade;
         PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
         PlayerPrefs.Save();
-        AtualizarUI();
+
+        // Atualiza apenas se estiver no menu
+        if (SceneManager.GetActiveScene().name == "Menu")
+        {
+            AtualizarUI_Menu();
+        }
+
+        Debug.Log($"Ganhou {quantidade} moedas no menu (por anúncio)");
     }
 
-    public void AdicionarMoedaPorAnuncio(int quantidade)
+    // Quando termina a partida
+    public void AdicionarMoedaAoTotal()
     {
-        AdicionarMoeda(quantidade);
-        Debug.Log("Ganhou " + quantidade + " moedas pelo anúncio!");
+        moedasTotais += moedasPartida;
+        moedasPartida = 0;
+        PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
+        PlayerPrefs.SetInt("MoedasPartida", 0);
+        PlayerPrefs.Save();
+        AtualizarUI_Menu();
     }
+
+    // ------------------------------------------------
+    // CONTROLE DE SALVAR / RESETAR
+    // ------------------------------------------------
+
+    public void SalvarPartida()
+    {
+        PlayerPrefs.SetInt("MoedasPartida", moedasPartida);
+        PlayerPrefs.Save();
+    }
+
+    public void ZerarMoedasDaPartida()
+    {
+        moedasPartida = 0;
+        PlayerPrefs.SetInt("MoedasPartida", 0);
+        PlayerPrefs.Save();
+        AtualizarUI_Jogo();
+    }
+
+    
 
     void AtualizarUI()
+    {
+        if (textoMoedas == null) return;
+
+        if (SceneManager.GetActiveScene().name == "Jogo")
+            textoMoedas.text = moedasPartida.ToString();
+        else
+            textoMoedas.text = moedasTotais.ToString();
+    }
+
+    void AtualizarUI_Jogo()
+    {
+        if (textoMoedas != null)
+            textoMoedas.text = moedasPartida.ToString();
+    }
+
+    void AtualizarUI_Menu()
     {
         if (textoMoedas != null)
             textoMoedas.text = moedasTotais.ToString();
     }
 
-    public int GetMoedasTotais()
-    {
-        return moedasTotais;
-    }
-    public void ZerarMoedas()
-    {
-        moedasTotais = 0;
-        PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
-        PlayerPrefs.Save();
-        AtualizarUI();
-    }
+    // ------------------------------------------------
+    // GETTERS
+    // ------------------------------------------------
+
+    public int GetMoedasTotais() => moedasTotais;
+    public int GetMoedasPartida() => moedasPartida;
 }
