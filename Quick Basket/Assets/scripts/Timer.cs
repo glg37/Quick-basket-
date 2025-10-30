@@ -6,10 +6,10 @@ using UnityEngine.SceneManagement;
 public class Timer : MonoBehaviour
 {
     [Header("Configurações de Tempo")]
-    public float tempoLimite = 30f; 
+    public float tempoLimite = 30f;
     private float tempoRestante;
-    public float bonusPorCesta = 5f; 
-    public float velocidadeTempo = 1.5f; 
+    public float bonusPorCesta = 5f;
+    public float velocidadeTempo = 1.5f;
 
     [Header("UI e Painel de Game Over")]
     public TextMeshProUGUI timerTexto;
@@ -18,18 +18,24 @@ public class Timer : MonoBehaviour
 
     private bool tempoPausado = false;
 
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject); // Mantém o Timer entre cenas
+    }
+
     void Start()
     {
-        
         Time.timeScale = 1f;
-
-        tempoRestante = tempoLimite;
         gameOverPanel.SetActive(false);
         restartButton.gameObject.SetActive(false);
 
-        AtualizarTextoTimer();
+        // Carrega o tempo salvo, se houver
+        if (PlayerPrefs.HasKey("tempoRestante"))
+            tempoRestante = PlayerPrefs.GetFloat("tempoRestante");
+        else
+            tempoRestante = tempoLimite;
 
-       
+        AtualizarTextoTimer();
         restartButton.onClick.AddListener(RestartGame);
     }
 
@@ -49,18 +55,14 @@ public class Timer : MonoBehaviour
     private void AtualizarTextoTimer()
     {
         if (timerTexto != null)
-            timerTexto.text = + Mathf.CeilToInt(tempoRestante) + "s";
+            timerTexto.text = Mathf.CeilToInt(tempoRestante) + "s";
     }
 
- 
     public void AdicionarTempo(float quantidade)
     {
         tempoRestante += quantidade;
-
-        
         if (tempoRestante > tempoLimite)
             tempoRestante = tempoLimite;
-
         AtualizarTextoTimer();
     }
 
@@ -89,14 +91,27 @@ public class Timer : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public float GetTempoRestante()
-    {
-        return tempoRestante;
-    }
+    public float GetTempoRestante() => tempoRestante;
 
     public void SetTempoRestante(float tempo)
     {
         tempoRestante = tempo;
         AtualizarTextoTimer();
+    }
+
+ 
+    public void SalvarTempo()
+    {
+        PlayerPrefs.SetFloat("tempoRestante", tempoRestante);
+        PlayerPrefs.Save();
+    }
+
+    public void CarregarTempo()
+    {
+        if (PlayerPrefs.HasKey("tempoRestante"))
+        {
+            tempoRestante = PlayerPrefs.GetFloat("tempoRestante");
+            AtualizarTextoTimer();
+        }
     }
 }

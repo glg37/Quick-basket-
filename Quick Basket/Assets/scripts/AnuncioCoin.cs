@@ -6,15 +6,15 @@ using System.Collections;
 public class AnuncioCoin : MonoBehaviour
 {
     [Header("Referências UI")]
-    public GameObject painelAnuncio;  
-    public Image imagemAnuncio;       
-    public Button botaoAnuncio;        
-    public TMP_Text contadorTexto;     
-    public int moedasPorAnuncio = 10;  
+    public GameObject painelAnuncio;
+    public Image imagemAnuncio;
+    public Button botaoAnuncio;
+    public TMP_Text contadorTexto;
+    public int moedasPorAnuncio = 10;
 
     [Header("Configurações")]
-    public float duracaoAnuncio = 5f; 
-    public int maxUsos = 2;            
+    public float duracaoAnuncio = 5f;
+    public int maxUsos = 2;
 
     [Header("Cores do botão X")]
     public Color corTextoBloqueado = Color.gray;
@@ -154,19 +154,11 @@ public class AnuncioCoin : MonoBehaviour
     {
         if (!emAnuncio || !botaoFechar.interactable) return;
 
-        //  Atualiza moedas via CoinManager (se existir)
-        if (CoinManager.instance != null)
-        {
-            CoinManager.instance.AdicionarMoeda(moedasPorAnuncio);
-        }
-        else
-        {
-            //  Atualiza via PlayerPrefs (backup)
-            int moedasAtuais = PlayerPrefs.GetInt("MoedasTotais", 0);
-            moedasAtuais += moedasPorAnuncio;
-            PlayerPrefs.SetInt("MoedasTotais", moedasAtuais);
-            PlayerPrefs.Save();
-        }
+       
+        int moedasAtuais = PlayerPrefs.GetInt("MoedasTotais", 0);
+        moedasAtuais += moedasPorAnuncio;
+        PlayerPrefs.SetInt("MoedasTotais", moedasAtuais);
+        PlayerPrefs.Save();
 
         painelAnuncio.SetActive(false);
         contadorTexto.text = "";
