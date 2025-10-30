@@ -38,15 +38,7 @@ public class MenuController : MonoBehaviour
 
     public void Jogar()
     {
-        // Remove apenas dados de progresso da arena
-        PlayerPrefs.DeleteKey("arenaAtual");
-        PlayerPrefs.DeleteKey("acertos");
-
-        //  Zera apenas as moedas da partida atual
-        if (CoinManager.instance != null)
-            CoinManager.instance.ZerarMoedasDoJogo();
-
-        // Carrega a cena do jogo com fade
+        PlayerPrefs.DeleteAll();
         StartCoroutine(FadeOutAndLoad("Jogo"));
     }
 

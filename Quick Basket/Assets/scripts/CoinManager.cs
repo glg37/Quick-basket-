@@ -7,12 +7,11 @@ public class CoinManager : MonoBehaviour
 {
     public static CoinManager instance;
 
-    [Header("UI do Jogo")]
-    public TMP_Text textoMoedas;   // Mostra moedas do jogo atual
+    [Header("UI da Moeda")]
+    public TMP_Text textoMoedas;
     public Image iconeMoeda;
 
-    private int moedasTotais = 0;       // Total acumulado (menu)
-    private int moedasJogoAtual = 0;    // Moedas da partida atual
+    private int moedasTotais = 0;
 
     void Awake()
     {
@@ -20,6 +19,7 @@ public class CoinManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded; //  Detecta mudança de cena
         }
         else
         {
@@ -34,20 +34,10 @@ public class CoinManager : MonoBehaviour
         AtualizarUI();
     }
 
-    void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
     private void OnSceneLoaded(Scene cena, LoadSceneMode modo)
     {
-        // Quando a cena de jogo for carregada, tenta reconectar o HUD
-        if (cena.name == "Jogo")
+        //  Tenta encontrar o texto da moeda novamente na nova cena
+        if (textoMoedas == null)
         {
             TMP_Text novoTexto = GameObject.FindWithTag("TextoMoeda")?.GetComponent<TMP_Text>();
             if (novoTexto != null)
@@ -58,46 +48,35 @@ public class CoinManager : MonoBehaviour
         }
     }
 
-    // Adiciona moedas durante o jogo
     public void AdicionarMoeda(int quantidade)
     {
-        moedasJogoAtual += quantidade;
         moedasTotais += quantidade;
-
         PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
         PlayerPrefs.Save();
-
         AtualizarUI();
     }
 
-    // Adiciona moedas no menu (por anúncio ou loja)
     public void AdicionarMoedaPorAnuncio(int quantidade)
     {
-        moedasTotais += quantidade;
+        AdicionarMoeda(quantidade);
+        Debug.Log("Ganhou " + quantidade + " moedas pelo anúncio!");
+    }
+
+    void AtualizarUI()
+    {
+        if (textoMoedas != null)
+            textoMoedas.text = moedasTotais.ToString();
+    }
+
+    public int GetMoedasTotais()
+    {
+        return moedasTotais;
+    }
+    public void ZerarMoedas()
+    {
+        moedasTotais = 0;
         PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
         PlayerPrefs.Save();
         AtualizarUI();
     }
-
-    //  Zera apenas moedas da partida atual
-    public void ZerarMoedasDoJogo()
-    {
-        moedasJogoAtual = 0;
-        AtualizarUI();
-        Debug.Log("Moedas da partida zeradas!");
-    }
-
-    // Atualiza UI do HUD
-    public void AtualizarUI()
-    {
-        if (textoMoedas != null)
-            textoMoedas.text = moedasJogoAtual.ToString();
-
-        if (iconeMoeda != null)
-            iconeMoeda.enabled = true;
-    }
-
-    // Getters
-    public int GetMoedasTotais() => moedasTotais;
-    public int GetMoedasDoJogoAtual() => moedasJogoAtual;
 }

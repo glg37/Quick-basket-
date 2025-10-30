@@ -15,7 +15,7 @@ public class ArenaManager : MonoBehaviour
     public Color[] coresArenas;
 
     [Header("Movimentação")]
-    public bool[] controlesInvertidos;
+    public bool[] controlesInvertidos; 
 
     [Header("Outros")]
     public Transform bola;
@@ -25,24 +25,24 @@ public class ArenaManager : MonoBehaviour
     public GameObject[] tetos;
     public GameObject painelVitoria;
 
-    [Header("Timer")]
-    public Timer timer; // Referência para o Timer
-
     private int arenaAtual = 0;
     private int acertos = 0;
-    private float tempoDeJogo = 0f;
 
     void Awake()
     {
         spawnersDeMoedas = new CoinSpawner[spawnersDeMoedasGO.Length];
         for (int i = 0; i < spawnersDeMoedasGO.Length; i++)
+        {
             spawnersDeMoedas[i] = spawnersDeMoedasGO[i].GetComponent<CoinSpawner>();
+        }
     }
 
     void Start()
     {
         rbBola = bola.GetComponent<Rigidbody2D>();
-        rbBola.gravityScale = 3f;
+
+       
+        rbBola.gravityScale = 3f; 
 
         if (PlayerPrefs.HasKey("arenaAtual"))
             CarregarJogo();
@@ -51,11 +51,6 @@ public class ArenaManager : MonoBehaviour
 
         if (painelVitoria != null)
             painelVitoria.SetActive(false);
-    }
-
-    void Update()
-    {
-        tempoDeJogo += Time.deltaTime;
     }
 
     void DescerArena()
@@ -93,6 +88,7 @@ public class ArenaManager : MonoBehaviour
             }
         }
 
+        
         if (arenaAtual < posicoesCamera.Length)
             mainCamera.transform.position = posicoesCamera[arenaAtual];
 
@@ -114,13 +110,16 @@ public class ArenaManager : MonoBehaviour
     {
         arenaAtual = 0;
         acertos = 0;
-        tempoDeJogo = 0f;
 
+        // Zera os tetos
         foreach (GameObject teto in tetos)
             if (teto != null) teto.SetActive(false);
 
+        // Zera as moedas do jogador
         if (CoinManager.instance != null)
-            CoinManager.instance.ZerarMoedasDoJogo();
+        {
+            CoinManager.instance.ZerarMoedas();
+        }
 
         AtualizarArenas();
         SalvarJogo();
@@ -138,11 +137,6 @@ public class ArenaManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("arenaAtual", arenaAtual);
         PlayerPrefs.SetInt("acertos", acertos);
-        PlayerPrefs.SetFloat("tempoDeJogo", tempoDeJogo);
-
-        if (timer != null)
-            timer.SalvarTempo();
-
         PlayerPrefs.Save();
     }
 
@@ -150,10 +144,6 @@ public class ArenaManager : MonoBehaviour
     {
         arenaAtual = PlayerPrefs.GetInt("arenaAtual", 0);
         acertos = PlayerPrefs.GetInt("acertos", 0);
-        tempoDeJogo = PlayerPrefs.GetFloat("tempoDeJogo", 0f);
-
-        if (timer != null)
-            timer.CarregarTempo();
 
         foreach (GameObject teto in tetos)
             if (teto != null) teto.SetActive(false);
@@ -163,13 +153,16 @@ public class ArenaManager : MonoBehaviour
 
         AtualizarArenas();
 
+        //  Move a bola para a posição da arena carregada
         if (arenaAtual >= 0 && arenaAtual < arenas.Length && bola != null)
         {
             Transform arenaAtualTransform = arenas[arenaAtual].transform;
+            // Ajusta a posição da bola para o centro da arena
             Vector3 novaPosicao = arenaAtualTransform.position;
-            novaPosicao.y += 2f;
+            novaPosicao.y += 2f; // sobe um pouquinho acima da cesta (ajuste fino)
             bola.position = novaPosicao;
 
+            // Reseta a velocidade para evitar queda brusca
             Rigidbody2D rb = bola.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
@@ -179,21 +172,25 @@ public class ArenaManager : MonoBehaviour
         }
     }
 
-    public int GetArenaAtualIndex() => arenaAtual;
+
+    public int GetArenaAtualIndex()
+    {
+        return arenaAtual;
+    }
 
     public Transform GetArenaAtualTransform()
     {
         if (arenaAtual >= 0 && arenaAtual < arenas.Length)
             return arenas[arenaAtual].transform;
-        return null;
+        else
+            return null;
     }
 
+   
     public bool ControlesInvertidos()
     {
         if (arenaAtual >= 0 && arenaAtual < controlesInvertidos.Length)
             return controlesInvertidos[arenaAtual];
         return false;
     }
-
-    public float GetTempoDeJogo() => tempoDeJogo;
 }
