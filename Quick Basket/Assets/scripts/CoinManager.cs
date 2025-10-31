@@ -9,12 +9,11 @@ public class CoinManager : MonoBehaviour
     [Header("UI da Moeda")]
     public TMP_Text textoMoedas;
 
-    private int moedasTotais = 0;   // Moedas acumuladas (menu)
+    private int moedasTotais = 0;   // Moedas acumuladas (menu/lojinha)
     private int moedasPartida = 0;  // Moedas da partida atual
 
     void Awake()
     {
-        // Singleton
         if (instance == null)
         {
             instance = this;
@@ -30,7 +29,6 @@ public class CoinManager : MonoBehaviour
 
     void Start()
     {
-        // Carrega moedas salvas
         moedasTotais = PlayerPrefs.GetInt("MoedasTotais", 0);
         moedasPartida = PlayerPrefs.GetInt("MoedasPartida", 0);
         AtualizarUI();
@@ -38,7 +36,6 @@ public class CoinManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene cena, LoadSceneMode modo)
     {
-        // Atualiza referência do texto de moedas
         TMP_Text novoTexto = GameObject.FindWithTag("TextoMoeda")?.GetComponent<TMP_Text>();
         if (novoTexto != null)
         {
@@ -46,7 +43,6 @@ public class CoinManager : MonoBehaviour
             AtualizarUI();
         }
 
-        // Atualiza UI conforme a cena
         if (cena.name == "Jogo")
             AtualizarUI_Jogo();
         else
@@ -57,14 +53,17 @@ public class CoinManager : MonoBehaviour
     // MÉTODOS DE ADIÇÃO DE MOEDAS
     // ------------------------------------------------
 
-    // Moedas coletadas jogando
     public void AdicionarMoeda(int quantidade)
     {
         moedasPartida += quantidade;
+
+        // Agora cada moeda coletada também aumenta o total
+        moedasTotais += quantidade;
+        PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
+
         AtualizarUI_Jogo();
     }
 
-    // Moedas ganhas assistindo anúncio (menu)
     public void AdicionarMoedaPorAnuncio(int quantidade)
     {
         moedasTotais += quantidade;
@@ -74,19 +73,8 @@ public class CoinManager : MonoBehaviour
         Debug.Log($"Ganhou {quantidade} moedas no menu (por anúncio)");
     }
 
-    // Quando termina a partida
-    public void AdicionarMoedaAoTotal()
-    {
-        moedasTotais += moedasPartida;
-        moedasPartida = 0;
-        PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
-        PlayerPrefs.SetInt("MoedasPartida", 0);
-        PlayerPrefs.Save();
-        AtualizarUI_Menu();
-    }
-
     // ------------------------------------------------
-    // CONTROLE DE SALVAR / RESETAR
+    // SALVAR / RESETAR
     // ------------------------------------------------
 
     public void SalvarPartida()
