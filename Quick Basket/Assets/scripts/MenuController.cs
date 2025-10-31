@@ -7,6 +7,7 @@ public class MenuController : MonoBehaviour
 {
     [Header("Botões")]
     public Button continuarButton;
+    public Button resetarButton;
 
     [Header("UI Painéis")]
     public GameObject painelCreditos;
@@ -16,10 +17,21 @@ public class MenuController : MonoBehaviour
     public Image fadeImage;
     public float fadeDuration = 1f;
 
+    void Awake()
+    {
+        // Garante que exista uma instância do CoinManager
+        CoinManager.GarantirInstancia();
+    }
+
     void Start()
     {
+        bool existeJogoSalvo = PlayerPrefs.HasKey("arenaAtual");
+
         if (continuarButton != null)
-            continuarButton.gameObject.SetActive(PlayerPrefs.HasKey("arenaAtual"));
+            continuarButton.gameObject.SetActive(existeJogoSalvo);
+
+        if (resetarButton != null)
+            resetarButton.gameObject.SetActive(existeJogoSalvo);
 
         if (painelCreditos != null)
             painelCreditos.SetActive(false);
@@ -34,18 +46,20 @@ public class MenuController : MonoBehaviour
             fadeImage.color = c;
             fadeImage.gameObject.SetActive(false);
         }
+
+        // Associa eventos aos botões
+        continuarButton?.onClick.AddListener(Continuar);
+        resetarButton?.onClick.AddListener(ResetarPartida);
     }
 
     public void Jogar()
     {
-        // Flag para zerar moedas da partida ao iniciar cena de jogo
         PlayerPrefs.SetInt("ZerarPartida", 1);
         StartCoroutine(FadeOutAndLoad("Jogo"));
     }
 
     public void Continuar()
     {
-        // Resume jogo com moedas da partida carregadas
         PlayerPrefs.SetInt("ZerarPartida", 0);
         StartCoroutine(FadeOutAndLoad("Jogo"));
     }
@@ -78,5 +92,21 @@ public class MenuController : MonoBehaviour
         }
 
         SceneManager.LoadScene(cena);
+    }
+
+    public void ResetarPartida()
+    {
+        // Zera apenas a partida atual
+        if (CoinManager.instance != null)
+            CoinManager.instance.ZerarMoedasDaPartida();
+
+        // Remove o jogo salvo
+        PlayerPrefs.DeleteKey("arenaAtual");
+        PlayerPrefs.DeleteKey("acertos");
+        PlayerPrefs.DeleteKey("ZerarPartida");
+
+        // Esconde os botões Continuar e Resetar
+        continuarButton?.gameObject.SetActive(false);
+        resetarButton?.gameObject.SetActive(false);
     }
 }

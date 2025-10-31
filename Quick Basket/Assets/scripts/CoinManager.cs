@@ -14,6 +14,7 @@ public class CoinManager : MonoBehaviour
 
     void Awake()
     {
+        // Singleton
         if (instance == null)
         {
             instance = this;
@@ -29,6 +30,7 @@ public class CoinManager : MonoBehaviour
 
     void Start()
     {
+        // Carrega moedas salvas
         moedasTotais = PlayerPrefs.GetInt("MoedasTotais", 0);
         moedasPartida = PlayerPrefs.GetInt("MoedasPartida", 0);
         AtualizarUI();
@@ -36,7 +38,7 @@ public class CoinManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene cena, LoadSceneMode modo)
     {
-        // Atualiza referência do texto de moedas quando a cena muda
+        // Atualiza referência do texto de moedas
         TMP_Text novoTexto = GameObject.FindWithTag("TextoMoeda")?.GetComponent<TMP_Text>();
         if (novoTexto != null)
         {
@@ -44,15 +46,11 @@ public class CoinManager : MonoBehaviour
             AtualizarUI();
         }
 
-        // Se entrou na cena de jogo, força HUD mostrar só moedas da partida
+        // Atualiza UI conforme a cena
         if (cena.name == "Jogo")
-        {
             AtualizarUI_Jogo();
-        }
-        else if (cena.name == "Menu")
-        {
+        else
             AtualizarUI_Menu();
-        }
     }
 
     // ------------------------------------------------
@@ -72,13 +70,7 @@ public class CoinManager : MonoBehaviour
         moedasTotais += quantidade;
         PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
         PlayerPrefs.Save();
-
-        // Atualiza apenas se estiver no menu
-        if (SceneManager.GetActiveScene().name == "Menu")
-        {
-            AtualizarUI_Menu();
-        }
-
+        AtualizarUI_Menu();
         Debug.Log($"Ganhou {quantidade} moedas no menu (por anúncio)");
     }
 
@@ -100,6 +92,7 @@ public class CoinManager : MonoBehaviour
     public void SalvarPartida()
     {
         PlayerPrefs.SetInt("MoedasPartida", moedasPartida);
+        PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
         PlayerPrefs.Save();
     }
 
@@ -111,7 +104,9 @@ public class CoinManager : MonoBehaviour
         AtualizarUI_Jogo();
     }
 
-    
+    // ------------------------------------------------
+    // ATUALIZAÇÃO DE UI
+    // ------------------------------------------------
 
     void AtualizarUI()
     {
@@ -141,4 +136,16 @@ public class CoinManager : MonoBehaviour
 
     public int GetMoedasTotais() => moedasTotais;
     public int GetMoedasPartida() => moedasPartida;
+
+    // ------------------------------------------------
+    // GARANTIR INSTÂNCIA NO MENU
+    // ------------------------------------------------
+    public static void GarantirInstancia()
+    {
+        if (instance == null)
+        {
+            GameObject go = new GameObject("CoinManager");
+            go.AddComponent<CoinManager>();
+        }
+    }
 }

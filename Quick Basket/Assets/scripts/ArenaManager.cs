@@ -40,6 +40,18 @@ public class ArenaManager : MonoBehaviour
         rbBola = bola.GetComponent<Rigidbody2D>();
         rbBola.gravityScale = 3f;
 
+        // Se existe jogo salvo, carregue arena e acertos
+        if (PlayerPrefs.HasKey("arenaAtual"))
+        {
+            arenaAtual = PlayerPrefs.GetInt("arenaAtual");
+            acertos = PlayerPrefs.GetInt("acertos");
+        }
+        else
+        {
+            arenaAtual = 0;
+            acertos = 0;
+        }
+
         AtualizarArenas();
 
         if (painelVitoria != null)
@@ -106,7 +118,7 @@ public class ArenaManager : MonoBehaviour
         foreach (GameObject teto in tetos)
             if (teto != null) teto.SetActive(false);
 
-        CoinManager.instance.ZerarMoedasDaPartida();
+        CoinManager.instance.ZerarMoedasDaPartida(); // só da partida atual
 
         AtualizarArenas();
 
@@ -121,12 +133,16 @@ public class ArenaManager : MonoBehaviour
 
     public void SalvarJogo()
     {
+        // Salva a arena atual e os acertos
         PlayerPrefs.SetInt("arenaAtual", arenaAtual);
         PlayerPrefs.SetInt("acertos", acertos);
-        PlayerPrefs.Save();
-        CoinManager.instance.SalvarPartida();
-    }
 
+        // Salva moedas da partida
+        CoinManager.instance?.SalvarPartida();
+
+        PlayerPrefs.Save();
+        Debug.Log($"Jogo salvo na arena {arenaAtual} com {acertos} acertos.");
+    }
     public int GetArenaAtualIndex() => arenaAtual;
 
     public Transform GetArenaAtualTransform()
