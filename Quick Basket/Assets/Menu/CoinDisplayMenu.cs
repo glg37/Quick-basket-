@@ -15,13 +15,11 @@ public class CoinDisplayMenu : MonoBehaviour
 
     void OnEnable()
     {
-        // Sempre atualiza a UI ao ativar a cena ou voltar do menu
         AtualizarUI();
     }
 
     void Start()
     {
-        // Inicializa a UI
         AtualizarUI();
     }
 
@@ -29,9 +27,7 @@ public class CoinDisplayMenu : MonoBehaviour
     {
         if (atualizarEmTempoReal)
         {
-            int moedasSalvas = CoinManager.instance != null ?
-                               CoinManager.instance.GetMoedasTotais() :
-                               PlayerPrefs.GetInt("MoedasTotais", 0);
+            int moedasSalvas = PlayerPrefs.GetInt("MoedasTotais", 0);
 
             if (moedasSalvas != moedasAtuais)
             {
@@ -43,17 +39,11 @@ public class CoinDisplayMenu : MonoBehaviour
 
     public void AtualizarUI()
     {
-        // Pega o total de moedas do CoinManager, se existir, senão pega do PlayerPrefs
-        if (CoinManager.instance != null)
-            moedasAtuais = CoinManager.instance.GetMoedasTotais();
-        else
-            moedasAtuais = PlayerPrefs.GetInt("MoedasTotais", 0);
+        moedasAtuais = PlayerPrefs.GetInt("MoedasTotais", 0);
 
-        // Atualiza o texto da moeda
         if (textoMoedasMenu != null)
             textoMoedasMenu.text = moedasAtuais.ToString();
 
-        // Garante que o ícone da moeda esteja visível
         if (iconeMoeda != null)
             iconeMoeda.enabled = true;
     }

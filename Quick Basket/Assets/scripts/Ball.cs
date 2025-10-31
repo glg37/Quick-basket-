@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.EventSystems;
 
 public class Ball : MonoBehaviour
 {
@@ -22,7 +23,6 @@ public class Ball : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         arenaManager = FindFirstObjectByType<ArenaManager>();
 
-        
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
         audioSource.clip = somLancamento;
@@ -31,6 +31,10 @@ public class Ball : MonoBehaviour
 
     void Update()
     {
+        // Se o clique estiver sobre UI, não lança a bola
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         if (Input.GetMouseButtonDown(0))
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -61,13 +65,11 @@ public class Ball : MonoBehaviour
             Mathf.Sqrt(2 * g * alturaExtra)
         );
 
-      
         if (arenaManager != null && arenaManager.ControlesInvertidos())
             velocidade.x = -velocidade.x;
 
         rb.AddForce(velocidade * forcaLancamento, ForceMode2D.Impulse);
 
-       
         if (cestaAtual != null)
         {
             Collider2D ballCollider = GetComponent<Collider2D>();
