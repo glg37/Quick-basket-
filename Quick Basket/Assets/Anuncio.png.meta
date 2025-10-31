@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: bcfbd354b42e26343a157eefc93d24e1
+guid: 8d350da592d69e2478f5416dbdd87646
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6892425030380747826
-    second: "Inserir um subt\xEDtulo_0"
+      213: 1862743356574869705
+    second: Anuncio_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "Inserir um subt\xEDtulo_0"
+      name: Anuncio_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ec30527d3ff2950a0800000000000000
-      internalID: -6892425030380747826
+      spriteID: 9c82d5ca63bc9d910800000000000000
+      internalID: 1862743356574869705
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "Inserir um subt\xEDtulo_0": -6892425030380747826
+      Anuncio_0: 1862743356574869705
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
