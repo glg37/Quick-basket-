@@ -12,6 +12,9 @@ public class CoinManager : MonoBehaviour
     private int moedasTotais = 0;   // Moedas acumuladas (menu/lojinha)
     private int moedasPartida = 0;  // Moedas da partida atual
 
+    private const string KEY_TOTAL = "MoedasTotais";
+    private const string KEY_PARTIDA = "MoedasPartida";
+
     void Awake()
     {
         if (instance == null)
@@ -29,37 +32,58 @@ public class CoinManager : MonoBehaviour
 
     void Start()
     {
-        moedasTotais = PlayerPrefs.GetInt("MoedasTotais", 0);
-        moedasPartida = PlayerPrefs.GetInt("MoedasPartida", 0);
+        // Carrega apenas na primeira inicialização
+        CarregarMoedas();
         AtualizarUI();
     }
 
     private void OnSceneLoaded(Scene cena, LoadSceneMode modo)
     {
+        // Sempre recarregar o texto da UI quando mudar de cena
         TMP_Text novoTexto = GameObject.FindWithTag("TextoMoeda")?.GetComponent<TMP_Text>();
         if (novoTexto != null)
-        {
             textoMoedas = novoTexto;
-            AtualizarUI();
-        }
 
-        if (cena.name == "Jogo")
-            AtualizarUI_Jogo();
-        else
+        // Toda vez que voltar ao MENU ? recarregar PlayerPrefs
+        if (cena.name != "Jogo")
+        {
+            moedasTotais = PlayerPrefs.GetInt(KEY_TOTAL, 0);
             AtualizarUI_Menu();
+        }
+        else
+        {
+            AtualizarUI_Jogo();
+        }
     }
 
     // ------------------------------------------------
-    // MÉTODOS DE ADIÇÃO DE MOEDAS
+    // CARREGAR / SALVAR
+    // ------------------------------------------------
+
+    private void CarregarMoedas()
+    {
+        moedasTotais = PlayerPrefs.GetInt(KEY_TOTAL, 0);
+        moedasPartida = PlayerPrefs.GetInt(KEY_PARTIDA, 0);
+    }
+
+    public void SalvarPartida()
+    {
+        PlayerPrefs.SetInt(KEY_TOTAL, moedasTotais);
+        PlayerPrefs.SetInt(KEY_PARTIDA, moedasPartida);
+        PlayerPrefs.Save();
+    }
+
+    // ------------------------------------------------
+    // ADICIONAR MOEDAS
     // ------------------------------------------------
 
     public void AdicionarMoeda(int quantidade)
     {
         moedasPartida += quantidade;
-
-        // Agora cada moeda coletada também aumenta o total
         moedasTotais += quantidade;
-        PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
+
+        PlayerPrefs.SetInt(KEY_TOTAL, moedasTotais);
+        PlayerPrefs.Save();
 
         AtualizarUI_Jogo();
     }
@@ -67,33 +91,46 @@ public class CoinManager : MonoBehaviour
     public void AdicionarMoedaPorAnuncio(int quantidade)
     {
         moedasTotais += quantidade;
-        PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
+
+        PlayerPrefs.SetInt(KEY_TOTAL, moedasTotais);
         PlayerPrefs.Save();
+
         AtualizarUI_Menu();
-        Debug.Log($"Ganhou {quantidade} moedas no menu (por anúncio)");
     }
 
     // ------------------------------------------------
-    // SALVAR / RESETAR
+    // DESCONTAR MOEDAS (LOJA)
     // ------------------------------------------------
 
-    public void SalvarPartida()
+    public bool TentarGastarMoedas(int quantidade)
     {
-        PlayerPrefs.SetInt("MoedasPartida", moedasPartida);
-        PlayerPrefs.SetInt("MoedasTotais", moedasTotais);
+        if (moedasTotais < quantidade)
+            return false;
+
+        moedasTotais -= quantidade;
+
+        PlayerPrefs.SetInt(KEY_TOTAL, moedasTotais);
         PlayerPrefs.Save();
+
+        AtualizarUI_Menu();
+        return true;
     }
+
+    // ------------------------------------------------
+    // RESET PARTIDA
+    // ------------------------------------------------
 
     public void ZerarMoedasDaPartida()
     {
         moedasPartida = 0;
-        PlayerPrefs.SetInt("MoedasPartida", 0);
+        PlayerPrefs.SetInt(KEY_PARTIDA, 0);
         PlayerPrefs.Save();
+
         AtualizarUI_Jogo();
     }
 
     // ------------------------------------------------
-    // ATUALIZAÇÃO DE UI
+    // UI
     // ------------------------------------------------
 
     void AtualizarUI()
