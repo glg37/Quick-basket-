@@ -1778,7 +1778,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1104846970
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2531,7 +2531,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cestaPrefab: {fileID: 3356930802297767257, guid: 14d893dfca4a10f4ca18ad3195131139, type: 3}
   ball: {fileID: 1676820935}
-  alturaMinimaRelativa: -1
+  alturaMinimaRelativa: 0.5
   alturaMaximaRelativa: 2
   xEsquerda: -3
   xDireita: 1
