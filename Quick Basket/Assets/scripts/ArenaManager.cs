@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class ArenaManager : MonoBehaviour
 {
@@ -32,6 +33,11 @@ public class ArenaManager : MonoBehaviour
     public int pontosPartida = 0;
     public int recorde = 0;
 
+    // ----------- POWER-UP DOBRAR PONTOS -----------
+    private bool powerUpAtivo = false; // se está ativo temporariamente
+    private float multiplicador = 1f;  // multiplicador atual
+    private bool powerUpComprado = false; // se o jogador comprou o power-up
+
     // ----------- Config novo (Jogo Infinito) ------------
     [Header("Jogo Infinito")]
     public float posXMin = -2f;
@@ -52,24 +58,16 @@ public class ArenaManager : MonoBehaviour
         rbBola.gravityScale = 3f;
 
         // Carrega arena e acertos
-        if (PlayerPrefs.HasKey("arenaAtual"))
-        {
-            arenaAtual = PlayerPrefs.GetInt("arenaAtual");
-            acertos = PlayerPrefs.GetInt("acertos");
-        }
-        else
-        {
-            arenaAtual = 0;
-            acertos = 0;
-        }
+        arenaAtual = PlayerPrefs.GetInt("arenaAtual", 0);
+        acertos = PlayerPrefs.GetInt("acertos", 0);
 
         // Carrega recorde
-        if (PlayerPrefs.HasKey("recorde"))
-            recorde = PlayerPrefs.GetInt("recorde");
-        else
-            recorde = 0;
+        recorde = PlayerPrefs.GetInt("recorde", 0);
 
         pontosPartida = 0;
+
+        // Verifica se jogador comprou power-up
+        powerUpComprado = PlayerPrefs.GetInt("PowerUpDoublePoints", 0) == 1;
 
         AtualizarArenas();
     }
@@ -84,7 +82,7 @@ public class ArenaManager : MonoBehaviour
         float x = Random.Range(posXMin, posXMax);
         float y = arenas[arenaAtual].transform.position.y + offsetAltura;
 
-        rbBola.linearVelocity = Vector2.zero;
+        rbBola.linearVelocity = Vector2.zero;  // antes: velocity
         rbBola.angularVelocity = 0f;
 
         bola.position = new Vector3(x, y, 0);
@@ -130,12 +128,14 @@ public class ArenaManager : MonoBehaviour
             fogPanel.SetActive(arenaAtual == arenaComFog);
     }
 
-    // =================== SISTEMA DE PONTOS / RECORDE ===================
+    // =================== SISTEMA DE PONTOS / POWER-UP ===================
 
     public void AcertouCesta()
     {
         acertos++;
-        pontosPartida++;
+
+        int pontosGanhos = Mathf.RoundToInt(1 * multiplicador);
+        pontosPartida += pontosGanhos;
 
         // Atualiza recorde
         if (pontosPartida > recorde)
@@ -150,7 +150,36 @@ public class ArenaManager : MonoBehaviour
             DescerArena();
     }
 
-   
+    // Método público para ativar X2 temporário
+    public void AtivarX2(float duracao)
+    {
+        if (powerUpComprado)
+        {
+            if (!powerUpAtivo)
+                StartCoroutine(X2Coroutine(duracao));
+            else
+                Debug.Log("Power-up X2 já está ativo!");
+        }
+        else
+        {
+            Debug.Log("Power-up X2 não comprado!");
+        }
+    }
+
+    private IEnumerator X2Coroutine(float duracao)
+    {
+        powerUpAtivo = true;
+        multiplicador = 2f;
+        Debug.Log("Power-up X2 ATIVADO!");
+
+        yield return new WaitForSeconds(duracao);
+
+        multiplicador = 1f;
+        powerUpAtivo = false;
+        Debug.Log("Power-up X2 DESATIVADO!");
+    }
+
+    // ======================== OUTROS MÉTODOS =========================
 
     public void NovoJogo()
     {
@@ -174,12 +203,11 @@ public class ArenaManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("arenaAtual", arenaAtual);
         PlayerPrefs.SetInt("acertos", acertos);
-
         PlayerPrefs.SetInt("recorde", recorde);
 
         CoinManager.instance?.SalvarPartida();
-
         PlayerPrefs.Save();
+
         Debug.Log($"Jogo salvo na arena {arenaAtual} com {acertos} acertos. Recorde: {recorde}");
     }
 

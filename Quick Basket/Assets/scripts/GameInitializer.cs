@@ -13,14 +13,17 @@ public class GameInitializer : MonoBehaviour
             PlayerPrefs.SetInt("MoedasPartida", 0);
             PlayerPrefs.SetInt("ItemPausaComprado", 0);
 
+            // RESETANDO TAMBÉM O RECORDE
+            PlayerPrefs.SetInt("recorde", 0);
+
             PlayerPrefs.Save();
 
             jaResetou = true;
-            Debug.Log(" Reset feito ao abrir o app.");
+            Debug.Log("Reset feito ao abrir o app, incluindo recorde.");
         }
         else
         {
-            Debug.Log(" Cena recarregada, mas NÃO resetar.");
+            Debug.Log("Cena recarregada, mas NÃO resetar.");
         }
     }
 }

@@ -3,7 +3,7 @@ using TMPro;
 
 public class PontuacaoUI : MonoBehaviour
 {
-    public TMP_Text textoPontos;   // Texto na HUD da cena do Jogo
+    public TMP_Text textoPontos;
     private ArenaManager arena;
 
     void Start()
@@ -13,9 +13,7 @@ public class PontuacaoUI : MonoBehaviour
 
     void Update()
     {
-        if (arena != null && textoPontos != null)
-        {
+        if (arena != null)
             textoPontos.text = "Cestas: " + arena.pontosPartida;
-        }
     }
 }
