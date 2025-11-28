@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;   // <--- IMPORTANTE para TextMeshPro
 
 public class MenuController : MonoBehaviour
 {
@@ -17,9 +18,11 @@ public class MenuController : MonoBehaviour
     public Image fadeImage;
     public float fadeDuration = 1f;
 
+    [Header("Recorde")]
+    public TMP_Text recordeText;   // <-- AGORA É TMP_Text
+
     void Awake()
     {
-        // Garante que exista uma instância do CoinManager
         CoinManager.GarantirInstancia();
     }
 
@@ -47,9 +50,27 @@ public class MenuController : MonoBehaviour
             fadeImage.gameObject.SetActive(false);
         }
 
-        // Associa eventos aos botões
+        // Atualiza o recorde na UI
+        AtualizarRecorde();
+
         continuarButton?.onClick.AddListener(Continuar);
         resetarButton?.onClick.AddListener(ResetarPartida);
+    }
+
+    private void AtualizarRecorde()
+    {
+        if (recordeText == null) return;
+
+        // Se NÃO existir recorde, o texto some
+        if (!PlayerPrefs.HasKey("recorde"))
+        {
+            recordeText.gameObject.SetActive(false);
+            return;
+        }
+
+        int recorde = PlayerPrefs.GetInt("recorde", 0);
+        recordeText.text = "Recorde: " + recorde;
+        recordeText.gameObject.SetActive(true);
     }
 
     public void Jogar()
@@ -78,6 +99,7 @@ public class MenuController : MonoBehaviour
         }
 
         fadeImage.gameObject.SetActive(true);
+
         Color c = fadeImage.color;
         c.a = 0f;
         fadeImage.color = c;
@@ -96,17 +118,16 @@ public class MenuController : MonoBehaviour
 
     public void ResetarPartida()
     {
-        // Zera apenas a partida atual
         if (CoinManager.instance != null)
             CoinManager.instance.ZerarMoedasDaPartida();
 
-        // Remove o jogo salvo
         PlayerPrefs.DeleteKey("arenaAtual");
         PlayerPrefs.DeleteKey("acertos");
         PlayerPrefs.DeleteKey("ZerarPartida");
 
-        // Esconde os botões Continuar e Resetar
         continuarButton?.gameObject.SetActive(false);
         resetarButton?.gameObject.SetActive(false);
+
+        AtualizarRecorde();
     }
 }

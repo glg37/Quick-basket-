@@ -24,14 +24,12 @@ public class Ball : MonoBehaviour
         arenaManager = FindFirstObjectByType<ArenaManager>();
 
         audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.playOnAwake = false;
         audioSource.clip = somLancamento;
         audioSource.volume = volumeSom;
     }
 
     void Update()
     {
-        // Se o clique estiver sobre UI, não lança a bola
         if (EventSystem.current.IsPointerOverGameObject())
             return;
 
@@ -40,8 +38,7 @@ public class Ball : MonoBehaviour
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             LancaBola(mousePos);
 
-            if (somLancamento != null)
-                audioSource.Play();
+            if (somLancamento) audioSource.Play();
         }
     }
 
@@ -57,27 +54,27 @@ public class Ball : MonoBehaviour
         float alturaTotal = deslocamento.y + alturaExtra;
         if (alturaTotal < 0.1f) alturaTotal = 0.1f;
 
-        float tempoVoo = Mathf.Sqrt((2 * alturaExtra) / g) + Mathf.Sqrt((2 * alturaTotal) / g);
-        if (tempoVoo <= 0.1f) tempoVoo = 0.5f;
+        float tempoVoo = Mathf.Sqrt((2 * alturaExtra) / g) +
+                         Mathf.Sqrt((2 * alturaTotal) / g);
+
+        if (tempoVoo < 0.1f) tempoVoo = 0.5f;
 
         Vector2 velocidade = new Vector2(
             deslocamento.x / tempoVoo,
             Mathf.Sqrt(2 * g * alturaExtra)
         );
 
-        if (arenaManager != null && arenaManager.ControlesInvertidos())
-            velocidade.x = -velocidade.x;
-
         rb.AddForce(velocidade * forcaLancamento, ForceMode2D.Impulse);
 
         if (cestaAtual != null)
         {
-            Collider2D ballCollider = GetComponent<Collider2D>();
-            Collider2D cestaCollider = cestaAtual.GetComponent<Collider2D>();
-            if (ballCollider && cestaCollider)
+            Collider2D ballCol = GetComponent<Collider2D>();
+            Collider2D cestaCol = cestaAtual.GetComponent<Collider2D>();
+
+            if (ballCol && cestaCol)
             {
-                Physics2D.IgnoreCollision(ballCollider, cestaCollider, true);
-                StartCoroutine(ResetCollision(ballCollider, cestaCollider, 0.5f));
+                Physics2D.IgnoreCollision(ballCol, cestaCol, true);
+                StartCoroutine(ResetCollision(ballCol, cestaCol, .5f));
             }
         }
     }
@@ -91,5 +88,14 @@ public class Ball : MonoBehaviour
     public void SetCestaAlvo(Transform novaCesta)
     {
         cestaAtual = novaCesta;
+    }
+
+    // ---------- Função chamada pelo ArenaManager ----------
+    public void TeleportarPara(Vector3 pos)
+    {
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+
+        transform.position = pos;
     }
 }

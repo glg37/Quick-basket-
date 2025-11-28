@@ -23,10 +23,21 @@ public class ArenaManager : MonoBehaviour
     public GameObject fogPanel;
     public int arenaComFog = 1;
     public GameObject[] tetos;
-    public GameObject painelVitoria;
 
     private int arenaAtual = 0;
     private int acertos = 0;
+
+    // ----------- Pontuação / Recorde -----------
+    [Header("Pontuação")]
+    public int pontosPartida = 0;
+    public int recorde = 0;
+
+    // ----------- Config novo (Jogo Infinito) ------------
+    [Header("Jogo Infinito")]
+    public float posXMin = -2f;
+    public float posXMax = 2f;
+    public float offsetAltura = 3f;
+    // ----------------------------------------------------
 
     void Awake()
     {
@@ -40,7 +51,7 @@ public class ArenaManager : MonoBehaviour
         rbBola = bola.GetComponent<Rigidbody2D>();
         rbBola.gravityScale = 3f;
 
-        // Se existe jogo salvo, carregue arena e acertos
+        // Carrega arena e acertos
         if (PlayerPrefs.HasKey("arenaAtual"))
         {
             arenaAtual = PlayerPrefs.GetInt("arenaAtual");
@@ -52,25 +63,41 @@ public class ArenaManager : MonoBehaviour
             acertos = 0;
         }
 
-        AtualizarArenas();
+        // Carrega recorde
+        if (PlayerPrefs.HasKey("recorde"))
+            recorde = PlayerPrefs.GetInt("recorde");
+        else
+            recorde = 0;
 
-        if (painelVitoria != null)
-            painelVitoria.SetActive(false);
+        pontosPartida = 0;
+
+        AtualizarArenas();
     }
+
+    // ======================== JOGO INFINITO =========================
+
+    void TeleportarBolaParaArenaAleatoria()
+    {
+        int novaArena = Random.Range(0, arenas.Length);
+        arenaAtual = novaArena;
+
+        float x = Random.Range(posXMin, posXMax);
+        float y = arenas[arenaAtual].transform.position.y + offsetAltura;
+
+        rbBola.linearVelocity = Vector2.zero;
+        rbBola.angularVelocity = 0f;
+
+        bola.position = new Vector3(x, y, 0);
+
+        AtualizarArenas();
+    }
+
+    // =================================================================
 
     void DescerArena()
     {
-        if (arenaAtual + 1 < arenas.Length)
-        {
-            arenaAtual++;
-            acertos = 0;
-            AtualizarArenas();
-        }
-        else
-        {
-            if (painelVitoria != null)
-                painelVitoria.SetActive(true);
-        }
+        acertos = 0;
+        TeleportarBolaParaArenaAleatoria();
     }
 
     public void AtivarTetoDaArena(int index)
@@ -103,27 +130,39 @@ public class ArenaManager : MonoBehaviour
             fogPanel.SetActive(arenaAtual == arenaComFog);
     }
 
+    // =================== SISTEMA DE PONTOS / RECORDE ===================
+
     public void AcertouCesta()
     {
         acertos++;
+        pontosPartida++;
+
+        // Atualiza recorde
+        if (pontosPartida > recorde)
+        {
+            recorde = pontosPartida;
+            PlayerPrefs.SetInt("recorde", recorde);
+            PlayerPrefs.Save();
+        }
+
+        // Desce arena se atingiu limite
         if (acertos >= cestasParaDescer[arenaAtual])
             DescerArena();
     }
+
+   
 
     public void NovoJogo()
     {
         arenaAtual = 0;
         acertos = 0;
+        pontosPartida = 0;
 
         foreach (GameObject teto in tetos)
             if (teto != null) teto.SetActive(false);
 
-        CoinManager.instance.ZerarMoedasDaPartida(); // só da partida atual
-
+        CoinManager.instance.ZerarMoedasDaPartida();
         AtualizarArenas();
-
-        if (painelVitoria != null)
-            painelVitoria.SetActive(false);
     }
 
     public void VoltarParaMenu()
@@ -133,16 +172,17 @@ public class ArenaManager : MonoBehaviour
 
     public void SalvarJogo()
     {
-        // Salva a arena atual e os acertos
         PlayerPrefs.SetInt("arenaAtual", arenaAtual);
         PlayerPrefs.SetInt("acertos", acertos);
 
-        // Salva moedas da partida
+        PlayerPrefs.SetInt("recorde", recorde);
+
         CoinManager.instance?.SalvarPartida();
 
         PlayerPrefs.Save();
-        Debug.Log($"Jogo salvo na arena {arenaAtual} com {acertos} acertos.");
+        Debug.Log($"Jogo salvo na arena {arenaAtual} com {acertos} acertos. Recorde: {recorde}");
     }
+
     public int GetArenaAtualIndex() => arenaAtual;
 
     public Transform GetArenaAtualTransform()
