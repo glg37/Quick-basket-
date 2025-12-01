@@ -9,6 +9,8 @@ public class PauseMenu : MonoBehaviour
     public Button quitButton;
     public Button saveAndQuitButton;
 
+    public Button pauseButton; // <-- Botão que vai abrir o pause
+
     private bool isPaused = false;
     private ArenaManager arenaManager;
 
@@ -20,9 +22,13 @@ public class PauseMenu : MonoBehaviour
         quitButton.onClick.AddListener(QuitToMenu);
         saveAndQuitButton.onClick.AddListener(SaveAndQuit);
 
+        pauseButton.onClick.AddListener(PauseGame); // <-- Abrir pause pelo botão
+
         arenaManager = FindFirstObjectByType<ArenaManager>();
     }
 
+    // REMOVIDO Update() com ESC
+    /*
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -33,6 +39,7 @@ public class PauseMenu : MonoBehaviour
                 PauseGame();
         }
     }
+    */
 
     void PauseGame()
     {
@@ -56,11 +63,9 @@ public class PauseMenu : MonoBehaviour
 
     void SaveAndQuit()
     {
-      
         if (arenaManager != null)
             arenaManager.SalvarJogo();
 
-       
         Timer timer = FindFirstObjectByType<Timer>();
         if (timer != null)
             PlayerPrefs.SetFloat("tempoRestante", timer.GetTempoRestante());

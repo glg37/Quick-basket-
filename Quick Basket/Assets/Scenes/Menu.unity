@@ -1110,7 +1110,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -22.6, y: 81.5}
+  m_AnchoredPosition: {x: -28.8, y: 82.09998}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &751120415
@@ -1521,7 +1521,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 9, y: 309.56}
+  m_AnchoredPosition: {x: -2, y: 286.71}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &900266629
@@ -2332,7 +2332,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1104846970
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2361,8 +2361,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 90.67631, y: -76.15591}
-  m_SizeDelta: {x: 122.6152, y: 227.3923}
+  m_AnchoredPosition: {x: 85.9309, y: -23.9572}
+  m_SizeDelta: {x: 123.5246, y: 237.5151}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1104846971
 MonoBehaviour:
@@ -2474,7 +2474,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -27.2, y: 83.3}
+  m_AnchoredPosition: {x: -28.8, y: 83.3}
   m_SizeDelta: {x: 98.2111, y: 58.0488}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1199971331
@@ -5192,11 +5192,12 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points:
-  - {x: 2.299383, y: 4.335156}
-  - {x: 2.3311427, y: -5.6726103}
-  - {x: -2.6724515, y: -5.6655984}
-  - {x: -2.6359148, y: 4.3314743}
-  - {x: 2.2994545, y: 4.2847223}
+  - {x: 2.0427644, y: 4.2618365}
+  - {x: 2.0745237, y: -5.2510223}
+  - {x: 2.074135, y: -5.5613604}
+  - {x: -2.4230824, y: -5.528746}
+  - {x: -2.4342856, y: 4.2214947}
+  - {x: 2.0061758, y: 4.2663927}
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
